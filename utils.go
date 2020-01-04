@@ -44,3 +44,14 @@ func replacePointsAndCommas(value string) string {
 	newValue := strings.Replace(value, ".", "", -1)
 	return strings.Replace(newValue, ",", "", -1)
 }
+
+func formatSearchValue(search string) string {
+	newSearch := strings.TrimSpace(search)
+	newSearch = strings.ReplaceAll(newSearch, " ", "+")
+	return newSearch
+}
+
+func urlIMDBSearch(search string) string {
+	searchFormated := formatSearchValue(search)
+	return fmt.Sprintf("https://www.imdb.com/find?q=%s&s=tt&ttype=ft", searchFormated)
+}
