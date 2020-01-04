@@ -68,10 +68,6 @@ func getAmountOfVotesToMovie(document *goquery.Document) int64 {
 
 func getMetascoreToMovie(document *goquery.Document) int64 {
 	metascore := getValueFromSiteDocument(document, "div.inline-block.ratings-metascore span.metascore", "")
-	if metascore == "" {
-		return -1
-	}
-
 	return stringToInt(metascore)
 }
 

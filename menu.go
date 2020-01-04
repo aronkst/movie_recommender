@@ -49,7 +49,21 @@ func menuAddNewMovie() {
 	fmt.Println()
 
 	movies := getSearchMovies(name)
-	for _, movie := range movies {
-		fmt.Println(movie.Title)
+	for i, movie := range movies {
+		fmt.Printf("[%d] %s (%d)\n", i+1, movie.Title, movie.Year)
+
+		if i >= 19 {
+			break
+		}
+	}
+
+	fmt.Println()
+	fmt.Println("Choose movie from list above or enter '0' to perform a new search.")
+	fmt.Println()
+	value := stringToInt(input())
+	if value >= 0 || value > 20 || value > len(movies) {
+		menuAddNewMovie()
+	} else {
+		fmt.Println(movie[value+1])
 	}
 }
