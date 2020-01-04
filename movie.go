@@ -1,6 +1,7 @@
 package main
 
 import (
+	"regexp"
 	"strings"
 
 	"github.com/PuerkitoBio/goquery"
@@ -15,7 +16,8 @@ type movie struct {
 	AmountOfVotes     int64
 	Metascore         int64
 	Genres            []string
-	Image             string
+	Cover             string
+	CoverSmall        string
 	RecommendedMovies []string
 }
 
@@ -35,7 +37,8 @@ func getMovie(imdb string) movie {
 		AmountOfVotes:     getAmountOfVotesToMovie(document),
 		Metascore:         getMetascoreToMovie(document),
 		Genres:            getGenresToMovie(document),
-		Image:             getImageToMovie(document),
+		Cover:             getCoverToMovie(document),
+		CoverSmall:        getCoverSmallToMovie(document),
 		RecommendedMovies: getRecommendedMoviesToMovie(document),
 	}
 }
@@ -81,7 +84,23 @@ func getGenresToMovie(document *goquery.Document) []string {
 	return genres
 }
 
-func getImageToMovie(document *goquery.Document) string {
+func getCoverToMovie(document *goquery.Document) string {
+	regex, err := regexp.Compile(`"image": ".*?",`)
+	if err != nil {
+		panic(err)
+	}
+
+	html, err := document.Html()
+	if err != nil {
+		panic(err)
+	}
+
+	value := regex.FindString(html)
+	value = strings.ReplaceAll(value, `"image": "`, "")
+	return strings.ReplaceAll(value, `",`, "")
+}
+
+func getCoverSmallToMovie(document *goquery.Document) string {
 	return getValueFromSiteDocument(document, "div.poster a img", "src")
 }
 
