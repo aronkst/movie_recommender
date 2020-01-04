@@ -1,6 +1,7 @@
 package main
 
 import (
+	"bufio"
 	"fmt"
 	"os"
 	"os/exec"
@@ -13,14 +14,13 @@ func clearScreen() {
 }
 
 func input() string {
-	var value string
-
-	_, err := fmt.Scanf("%s", &value)
+	input := bufio.NewReader(os.Stdin)
+	value, err := input.ReadString('\n')
 	if err != nil {
 		panic(err)
 	}
 
-	return value
+	return clearString(value)
 }
 
 func menu() {
@@ -47,5 +47,9 @@ func menuAddNewMovie() {
 	fmt.Println()
 	name := input()
 	fmt.Println()
-	fmt.Println(name) // TODO REMOVE
+
+	movies := getSearchMovies(name)
+	for _, movie := range movies {
+		fmt.Println(movie.Title)
+	}
 }
