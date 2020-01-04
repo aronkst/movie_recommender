@@ -31,6 +31,7 @@ func menu() {
 	fmt.Println("[2] Remove a movie")
 	fmt.Println()
 	fmt.Println("Select one of the options:")
+	fmt.Println()
 
 	value := input()
 	switch value {
@@ -60,10 +61,12 @@ func menuAddNewMovie() {
 	fmt.Println()
 	fmt.Println("Choose movie from list above or enter '0' to perform a new search.")
 	fmt.Println()
+
 	value := stringToInt(input())
-	if value >= 0 || value > 20 || value > len(movies) {
+	if value <= 0 || value > 20 || value > int64(len(movies)) {
 		menuAddNewMovie()
 	} else {
-		fmt.Println(movie[value+1])
+		movie := getMovie(movies[value-1].IMDB)
+		fmt.Println(movie)
 	}
 }

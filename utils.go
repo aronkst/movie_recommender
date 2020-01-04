@@ -47,8 +47,7 @@ func replacePointsAndCommas(value string) string {
 
 func formatSearchValue(search string) string {
 	newSearch := strings.TrimSpace(search)
-	newSearch = strings.ReplaceAll(newSearch, " ", "+")
-	return newSearch
+	return strings.ReplaceAll(newSearch, " ", "+")
 }
 
 func urlIMDBSearch(search string) string {
