@@ -4,6 +4,7 @@
 *.dll
 *.so
 *.dylib
+movie_recommender
 
 # Test binary, built with `go test -c`
 *.test
