@@ -18,8 +18,8 @@ func menu() {
 	fmt.Println("[2] Remove a movie")
 	fmt.Println()
 	fmt.Println("Select one of the options:")
+
 	value := input()
-	fmt.Println()
 	switch value {
 	case "1":
 		menuAddNewMovie()
@@ -36,10 +36,12 @@ func clearScreen() {
 
 func input() string {
 	var value string
+
 	_, err := fmt.Scanf("%s", &value)
 	if err != nil {
 		panic(err)
 	}
+
 	return value
 }
 
