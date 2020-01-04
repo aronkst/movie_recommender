@@ -12,19 +12,19 @@ func main() {
 
 func menu() {
 	clearScreen()
-	fmt.Println("Movie Reccomender")
+	fmt.Println("Movie Recommender")
 	fmt.Println()
-	fmt.Println("[1] Add new movie")
+	fmt.Println("[1] Add a new movie")
 	fmt.Println("[2] Remove a movie")
 	fmt.Println()
-	fmt.Println("Select option:")
+	fmt.Println("Select one of the options:")
 	value := input()
 	fmt.Println()
 	switch value {
 	case "1":
-		fmt.Println("one")
+		menuAddNewMovie()
 	case "2":
-		fmt.Println("two")
+		fmt.Println("2")
 	}
 }
 
@@ -41,4 +41,13 @@ func input() string {
 		panic(err)
 	}
 	return value
+}
+
+func menuAddNewMovie() {
+	clearScreen()
+	fmt.Println("What is the name of the movie?")
+	fmt.Println()
+	name := input()
+	fmt.Println()
+	fmt.Println(name) // TODO REMOVE
 }
