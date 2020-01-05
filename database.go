@@ -27,5 +27,5 @@ func readMovies() []string {
 		}
 	}
 
-	return database
+	return uniqueArrayString(database)
 }

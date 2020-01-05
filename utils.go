@@ -54,3 +54,15 @@ func urlIMDBSearch(search string) string {
 	searchFormated := formatSearchValue(search)
 	return fmt.Sprintf("https://www.imdb.com/find?q=%s&s=tt&ttype=ft", searchFormated)
 }
+
+func uniqueArrayString(array []string) []string {
+	keys := make(map[string]bool)
+	list := []string{}
+	for _, entry := range array {
+		if _, value := keys[entry]; !value {
+			keys[entry] = true
+			list = append(list, entry)
+		}
+	}
+	return list
+}
