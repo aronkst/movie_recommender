@@ -66,3 +66,12 @@ func uniqueArrayString(array []string) []string {
 	}
 	return list
 }
+
+func findMovieIMDb(movies []movie, imdb string) (bool, int) {
+	for index, movie := range movies {
+		if movie.IMDb == imdb {
+			return true, index
+		}
+	}
+	return false, -1
+}

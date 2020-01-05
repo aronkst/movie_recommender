@@ -35,7 +35,7 @@ func readWatchedMovies() []string {
 func readHTML() string {
 	file, err := ioutil.ReadFile("Recommended Movies.html")
 	if err != nil {
-		panic(err)
+		return ""
 	}
 	return string(file)
 }
@@ -68,7 +68,7 @@ func loadMovieFromHTML(document *goquery.Document, selector string) []movie {
 			Metascore:         stringToInt(getValueFromSiteSelection(s, "p.Metascore", "")),
 			Points:            stringToInt(getValueFromSiteSelection(s, "p.Points", "")),
 			Genres:            strings.Split(getValueFromSiteSelection(s, "p.Genres", ""), ", "),
-			Cover:             getValueFromSiteSelection(s, "img.Cover", "src"),
+			Cover:             getValueFromSiteSelection(s, "p.Cover", ""),
 			CoverSmall:        getValueFromSiteSelection(s, "img.CoverSmall", "src"),
 			RecommendedMovies: strings.Split(getValueFromSiteSelection(s, "p.RecommendedMovies", ""), ", "),
 		}

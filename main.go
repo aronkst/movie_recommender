@@ -2,7 +2,25 @@ package main
 
 func main() {
 	// menu()
-	s1 := []movie{getMovie("tt0314331"), getMovie("tt0095016")}
-	s2 := []movie{getMovie("tt3748528"), getMovie("tt2283362")}
-	createHTML(s1, s2)
+
+	watchedMovies := readWatchedMovies()
+	watchedMoviesHTML, recommendedMovies := readHTMLMovies()
+
+	for _, imdb := range watchedMovies {
+		if contains, _ := findMovieIMDb(watchedMoviesHTML, imdb); contains == false {
+			movie := getMovie(imdb)
+			watchedMoviesHTML = append(watchedMoviesHTML, movie)
+
+			for _, recommendedMovieIMDb := range movie.RecommendedMovies {
+				if contains, index := findMovieIMDb(recommendedMovies, recommendedMovieIMDb); contains {
+					recommendedMovies[index].Points += movie.Points
+				} else {
+					recommendedMovie := getMovie(recommendedMovieIMDb)
+					recommendedMovies = append(recommendedMovies, recommendedMovie)
+				}
+			}
+		}
+	}
+
+	createHTML(watchedMoviesHTML, recommendedMovies)
 }

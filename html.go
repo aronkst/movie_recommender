@@ -33,7 +33,7 @@ func textHTML(watchedMovies []movie, recommendedMovies []movie) string {
 		<title>Recommended Movies</title>
 	</head>
 	<body>
-		<h1>Recommended Movies<h1>
+		<h1>Recommended Movies</h1>
 		<div class="watched-movies" style="display: none;">
 %s
 		</div>
@@ -47,8 +47,8 @@ func textHTML(watchedMovies []movie, recommendedMovies []movie) string {
 func textHTMLRecommendedMovie(movie movie) string {
 	return fmt.Sprintf(`			<div class="movie">
 				<hr />
-				<img class="Cover" src="%s">
-				<img class="CoverSmall" src="%s">
+				<p class="Cover>%s</p>
+				<img class="CoverSmall" src="%s" />
 				<p class="IMDb">%s</p>
 				<h2 class="Title">%s</h2>
 				<p class="Year">%d</p>
