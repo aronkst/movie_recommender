@@ -17,7 +17,7 @@ func checkHTML() {
 	}
 }
 
-func createHTML(watchedMovies []string, recommendedMovies []movie) {
+func createHTML(watchedMovies []movie, recommendedMovies []movie) {
 	checkHTML()
 	bytes := []byte(textHTML(watchedMovies, recommendedMovies))
 	err := ioutil.WriteFile("Recommended Movies.html", bytes, os.ModePerm)
@@ -26,31 +26,22 @@ func createHTML(watchedMovies []string, recommendedMovies []movie) {
 	}
 }
 
-func textHTML(watchedMovies []string, recommendedMovies []movie) string {
+func textHTML(watchedMovies []movie, recommendedMovies []movie) string {
 	return fmt.Sprintf(`<!DOCTYPE html>
 <html>
 	<head>
 		<title>Recommended Movies</title>
 	</head>
 	<body>
-		<div class="watched-movies">
-			%s
+		<h1>Recommended Movies<h1>
+		<div class="watched-movies" style="display: none;">
+%s
 		</div>
 		<div class="recommended-movies">
 %s
 		</div>
 	</body>
-</html>`, textHTMLWatchedMovies(watchedMovies), textHTMLRecommendedMovies(recommendedMovies))
-}
-
-func textHTMLWatchedMovies(movies []string) string {
-	var html string
-
-	for _, movie := range movies {
-		html += fmt.Sprintf("%s, ", movie)
-	}
-
-	return html[0 : len(html)-2]
+</html>`, textHTMLMovies(watchedMovies), textHTMLMovies(recommendedMovies))
 }
 
 func textHTMLRecommendedMovie(movie movie) string {
@@ -74,7 +65,7 @@ func textHTMLRecommendedMovie(movie movie) string {
 		strings.Join(movie.RecommendedMovies, ", "), "\n")
 }
 
-func textHTMLRecommendedMovies(movies []movie) string {
+func textHTMLMovies(movies []movie) string {
 	var html string
 
 	for _, movie := range movies {
