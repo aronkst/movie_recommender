@@ -40,18 +40,24 @@ func readHTML() string {
 	return string(file)
 }
 
-func readRecommendedMovies() ([]string, []movie) {
+func readHTMLMovies() ([]movie, []movie) {
 	document, err := goquery.NewDocumentFromReader(strings.NewReader(readHTML()))
 	if err != nil {
 		panic(err)
 	}
 
-	var watchedMovies []string
-	var recommendedMovies []movie
+	var watchedMovies, recommendedMovies []movie
 
-	watchedMovies = strings.Split(getValueFromSiteDocument(document, "watched-movies", ""), ", ")
+	watchedMovies = loadMovieFromHTML(document, "div.watched-movies div.movie")
+	recommendedMovies = loadMovieFromHTML(document, "div.recommended-movies div.movie")
 
-	document.Find("div.recommended-movies div.movie").Each(func(i int, s *goquery.Selection) {
+	return watchedMovies, recommendedMovies
+}
+
+func loadMovieFromHTML(document *goquery.Document, selector string) []movie {
+	var movies []movie
+
+	document.Find(selector).Each(func(i int, s *goquery.Selection) {
 		movie := movie{
 			IMDb:              getValueFromSiteSelection(s, "p.IMDb", ""),
 			Title:             getValueFromSiteSelection(s, "h2.Title", ""),
@@ -66,8 +72,8 @@ func readRecommendedMovies() ([]string, []movie) {
 			CoverSmall:        getValueFromSiteSelection(s, "img.CoverSmall", "src"),
 			RecommendedMovies: strings.Split(getValueFromSiteSelection(s, "p.RecommendedMovies", ""), ", "),
 		}
-		recommendedMovies = append(recommendedMovies, movie)
+		movies = append(movies, movie)
 	})
 
-	return watchedMovies, recommendedMovies
+	return movies
 }
