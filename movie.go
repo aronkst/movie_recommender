@@ -15,6 +15,7 @@ type movie struct {
 	Score             float64
 	AmountOfVotes     int64
 	Metascore         int64
+	Points            int64
 	Genres            []string
 	Cover             string
 	CoverSmall        string
@@ -28,14 +29,26 @@ func getMovie(imdb string) movie {
 		panic(err)
 	}
 
+	var points int64
+
+	score := getScoreToMovie(document)
+	amountOfVotes := getAmountOfVotesToMovie(document)
+	metascore := getMetascoreToMovie(document)
+	if metascore <= 0 {
+		points = int64(float64((score+float64(metascore/10))/2) * float64(amountOfVotes))
+	} else {
+		points = int64(score * float64(amountOfVotes))
+	}
+
 	return movie{
 		IMDb:              imdb,
 		Title:             getTitleToMovie(document),
 		Year:              getYearToMovie(document),
 		Summary:           getSummaryToMovie(document),
-		Score:             getScoreToMovie(document),
-		AmountOfVotes:     getAmountOfVotesToMovie(document),
-		Metascore:         getMetascoreToMovie(document),
+		Score:             score,
+		AmountOfVotes:     amountOfVotes,
+		Metascore:         metascore,
+		Points:            points,
 		Genres:            getGenresToMovie(document),
 		Cover:             getCoverToMovie(document),
 		CoverSmall:        getCoverSmallToMovie(document),

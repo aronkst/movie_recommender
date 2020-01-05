@@ -60,6 +60,7 @@ func readRecommendedMovies() ([]string, []movie) {
 			Score:             stringToFloat(getValueFromSiteSelection(s, "p.Score", "")),
 			AmountOfVotes:     stringToInt(getValueFromSiteSelection(s, "p.AmountOfVotes", "")),
 			Metascore:         stringToInt(getValueFromSiteSelection(s, "p.Metascore", "")),
+			Points:            stringToInt(getValueFromSiteSelection(s, "p.Points", "")),
 			Genres:            strings.Split(getValueFromSiteSelection(s, "p.Genres", ""), ", "),
 			Cover:             getValueFromSiteSelection(s, "img.Cover", "src"),
 			CoverSmall:        getValueFromSiteSelection(s, "img.CoverSmall", "src"),

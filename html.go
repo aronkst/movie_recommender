@@ -65,11 +65,12 @@ func textHTMLRecommendedMovie(movie movie) string {
 				<p class="Score">%f</p>
 				<p class="AmountOfVotes">%d</p>
 				<p class="Metascore">%d</p>
+				<p class="Points">%d</p>
 				<p class="Genres">%s</p>
 				<p class="RecommendedMovies">%s</p>
 			</div>%s`, movie.Cover, movie.CoverSmall, movie.IMDb, movie.Title,
 		movie.Year, movie.Summary, movie.Score, movie.AmountOfVotes,
-		movie.Metascore, strings.Join(movie.Genres, ", "),
+		movie.Metascore, movie.Points, strings.Join(movie.Genres, ", "),
 		strings.Join(movie.RecommendedMovies, ", "), "\n")
 }
 
