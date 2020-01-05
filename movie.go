@@ -36,9 +36,9 @@ func getMovie(imdb string) movie {
 	amountOfVotes := getAmountOfVotesToMovie(document)
 	metascore := getMetascoreToMovie(document)
 	if metascore <= 0 {
-		points = int64(float64((score+float64(metascore/10))/2) * float64(amountOfVotes))
-	} else {
 		points = int64(score * float64(amountOfVotes))
+	} else {
+		points = int64(float64((score+float64(metascore/10))/2) * float64(amountOfVotes))
 	}
 
 	return movie{
