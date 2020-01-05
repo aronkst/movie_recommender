@@ -71,6 +71,7 @@ func loadMovieFromHTML(document *goquery.Document, selector string) []movie {
 			Cover:             getValueFromSiteSelection(s, "p.Cover", ""),
 			CoverSmall:        getValueFromSiteSelection(s, "img.CoverSmall", "src"),
 			RecommendedMovies: strings.Split(getValueFromSiteSelection(s, "p.RecommendedMovies", ""), ", "),
+			RecommendedBy:     strings.Split(getValueFromSiteSelection(s, "p.RecommendedBy", ""), ", "),
 		}
 		movies = append(movies, movie)
 	})

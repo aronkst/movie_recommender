@@ -20,6 +20,7 @@ type movie struct {
 	Cover             string
 	CoverSmall        string
 	RecommendedMovies []string
+	RecommendedBy     []string
 }
 
 func getMovie(imdb string) movie {
@@ -53,6 +54,7 @@ func getMovie(imdb string) movie {
 		Cover:             getCoverToMovie(document),
 		CoverSmall:        getCoverSmallToMovie(document),
 		RecommendedMovies: getRecommendedMoviesToMovie(document),
+		RecommendedBy:     []string{},
 	}
 }
 

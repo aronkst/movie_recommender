@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"os"
+	"sort"
 	"strings"
 )
 
@@ -19,6 +20,14 @@ func checkHTML() {
 
 func createHTML(watchedMovies []movie, recommendedMovies []movie) {
 	checkHTML()
+
+	sort.Slice(watchedMovies, func(i, j int) bool {
+		return watchedMovies[i].Points > watchedMovies[j].Points
+	})
+	sort.Slice(recommendedMovies, func(i, j int) bool {
+		return recommendedMovies[i].Points > recommendedMovies[j].Points
+	})
+
 	bytes := []byte(textHTML(watchedMovies, recommendedMovies))
 	err := ioutil.WriteFile("Recommended Movies.html", bytes, os.ModePerm)
 	if err != nil {
@@ -47,7 +56,7 @@ func textHTML(watchedMovies []movie, recommendedMovies []movie) string {
 func textHTMLRecommendedMovie(movie movie) string {
 	return fmt.Sprintf(`			<div class="movie">
 				<hr />
-				<p class="Cover>%s</p>
+				<p class="Cover">%s</p>
 				<img class="CoverSmall" src="%s" />
 				<p class="IMDb">%s</p>
 				<h2 class="Title">%s</h2>
@@ -59,10 +68,12 @@ func textHTMLRecommendedMovie(movie movie) string {
 				<p class="Points">%d</p>
 				<p class="Genres">%s</p>
 				<p class="RecommendedMovies">%s</p>
+				<p class="RecommendedBy">%s</p>
 			</div>%s`, movie.Cover, movie.CoverSmall, movie.IMDb, movie.Title,
 		movie.Year, movie.Summary, movie.Score, movie.AmountOfVotes,
 		movie.Metascore, movie.Points, strings.Join(movie.Genres, ", "),
-		strings.Join(movie.RecommendedMovies, ", "), "\n")
+		strings.Join(movie.RecommendedMovies, ", "),
+		strings.Join(movie.RecommendedBy, ", "), "\n")
 }
 
 func textHTMLMovies(movies []movie) string {
