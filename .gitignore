@@ -5,6 +5,7 @@
 *.so
 *.dylib
 movie_recommender
+Recommended Movies.html
 
 # Test binary, built with `go test -c`
 *.test
