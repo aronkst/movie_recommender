@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"os"
+	"strings"
 )
 
 func checkHTML() {
@@ -55,11 +56,21 @@ func textHTMLWatchedMovies(movies []string) string {
 func textHTMLRecommendedMovie(movie movie) string {
 	return fmt.Sprintf(`			<div class="movie">
 				<hr />
-				<h2>%s (%d)</h2>
-				<img src="%s">
-				<p>%s</p>
-				<p>%f</p>
-			</div>%s`, movie.Title, movie.Year, movie.CoverSmall, movie.Summary, movie.Score, "\n")
+				<img class="Cover" src="%s">
+				<img class="CoverSmall" src="%s">
+				<p class="IMDb">%s</p>
+				<h2 class="Title">%s</h2>
+				<p class="Year">%d</p>
+				<p class="Summary">%s</p>
+				<p class="Score">%f</p>
+				<p class="AmountOfVotes">%d</p>
+				<p class="Metascore">%d</p>
+				<p class="Genres">%s</p>
+				<p class="RecommendedMovies">%s</p>
+			</div>%s`, movie.Cover, movie.CoverSmall, movie.IMDb, movie.Title,
+		movie.Year, movie.Summary, movie.Score, movie.AmountOfVotes,
+		movie.Metascore, strings.Join(movie.Genres, ", "),
+		strings.Join(movie.RecommendedMovies, ", "), "\n")
 }
 
 func textHTMLRecommendedMovies(movies []movie) string {
