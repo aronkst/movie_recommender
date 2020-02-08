@@ -32,7 +32,8 @@ func menu() {
 	clearScreen()
 	fmt.Println("Movie Recommender")
 	fmt.Println("\n[1] Add a new movie")
-	fmt.Println("[2] Remove a movie")
+	fmt.Println("\n[2] Remove a movie")
+	fmt.Println("\n[3] Make the HTML")
 
 	value := input("\nSelect one of the options")
 	switch value {
@@ -40,6 +41,8 @@ func menu() {
 		menuAddNewMovie()
 	case "2":
 		fmt.Println("2")
+	case "3":
+		makeHTML()
 	default:
 		menu()
 	}
