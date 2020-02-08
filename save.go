@@ -9,7 +9,7 @@ import (
 )
 
 func getFolderDownloadImage(date string) string {
-	return fmt.Sprintf("/tmp/%s", date[0:4])
+	return fmt.Sprintf("./%s", date[0:4])
 }
 
 func checkFolderDownloadImage(date string) {
