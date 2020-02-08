@@ -37,7 +37,7 @@ func readHTML() string {
 	if err != nil {
 		return ""
 	}
-	return string(file)
+	return replaceCommentHTML(string(file))
 }
 
 func readHTMLMovies() ([]movie, []movie) {

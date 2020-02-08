@@ -45,6 +45,11 @@ func replacePointsAndCommas(value string) string {
 	return strings.Replace(newValue, ",", "", -1)
 }
 
+func replaceCommentHTML(value string) string {
+	newValue := strings.Replace(value, "<!-- ", "", 1)
+	return strings.Replace(newValue, " -->", "", 1)
+}
+
 func formatSearchValue(search string) string {
 	newSearch := strings.TrimSpace(search)
 	return strings.ReplaceAll(newSearch, " ", "+")

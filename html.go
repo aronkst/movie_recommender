@@ -43,9 +43,9 @@ func textHTML(watchedMovies []movie, recommendedMovies []movie) string {
 	</head>
 	<body>
 		<h1>Recommended Movies</h1>
-		<div class="watched-movies" style="display: none;">
+		<!-- <div class="watched-movies">
 %s
-		</div>
+		</div> -->
 		<div class="recommended-movies">
 %s
 		</div>
@@ -81,6 +81,10 @@ func textHTMLMovies(movies []movie) string {
 
 	for _, movie := range movies {
 		html += textHTMLRecommendedMovie(movie)
+	}
+
+	if len(html) <= 0 {
+		return ""
 	}
 
 	return html[0 : len(html)-1]
