@@ -43,10 +43,10 @@ func textHTML(watchedMovies []movie, recommendedMovies []movie) string {
 	</head>
 	<body>
 		<h1>Recommended Movies</h1>
-		<!-- <div class="watched-movies">
+		<!-- <div id="WatchedMovies">
 %s
 		</div> -->
-		<div class="recommended-movies">
+		<div id="RecommendedMovies">
 %s
 		</div>
 	</body>
@@ -54,26 +54,26 @@ func textHTML(watchedMovies []movie, recommendedMovies []movie) string {
 }
 
 func textHTMLRecommendedMovie(movie movie) string {
-	return fmt.Sprintf(`			<div class="movie">
+	return fmt.Sprintf(`			<div id="Movie">
 				<hr />
-				<p class="Cover">%s</p>
-				<img class="CoverSmall" src="%s" />
-				<p class="IMDb">%s</p>
-				<h2 class="Title">%s</h2>
-				<p class="Year">%d</p>
-				<p class="Summary">%s</p>
-				<p class="Score">%f</p>
-				<p class="AmountOfVotes">%d</p>
-				<p class="Metascore">%d</p>
-				<p class="Points">%d</p>
-				<p class="Genres">%s</p>
-				<p class="RecommendedMovies">%s</p>
-				<p class="RecommendedBy">%s</p>
-			</div>%s`, movie.Cover, movie.CoverSmall, movie.IMDb, movie.Title,
-		movie.Year, movie.Summary, movie.Score, movie.AmountOfVotes,
-		movie.Metascore, movie.Points, strings.Join(movie.Genres, ", "),
-		strings.Join(movie.RecommendedMovies, ", "),
-		strings.Join(movie.RecommendedBy, ", "), "\n")
+				<p id="Cover" style="display: none;" title="Cover">%s</p>
+				<p id="RecommendedMovies" style="display: none;" title="Recommended Movies">%s</p>
+				<p id="IMDb" title="IMDb">%s</p>
+				<img id="CoverSmall" src="%s" title="Small Cover" />
+				<h2 id="Title" title="Title">%s</h2>
+				<p id="Summary" title="Summary">%s</p>
+				<p id="Year" title="Year">%d</p>
+				<p id="Score" title="Score">%f</p>
+				<p id="AmountOfVotes" title="Amount Of Votes">%d</p>
+				<p id="Metascore" title="Metascore">%d</p>
+				<p id="Points" title="Points">%d</p>
+				<p id="Genres" title="Genres">%s</p>
+				<p id="RecommendedBy" title="Recommended By">%s</p>
+			</div>%s`, movie.Cover, strings.Join(movie.RecommendedMovies, ", "),
+		movie.IMDb, movie.CoverSmall, movie.Title, movie.Summary, movie.Year,
+		movie.Score, movie.AmountOfVotes, movie.Metascore, movie.Points,
+		strings.Join(movie.Genres, ", "), strings.Join(movie.RecommendedBy, ", "),
+		"\n")
 }
 
 func textHTMLMovies(movies []movie) string {
