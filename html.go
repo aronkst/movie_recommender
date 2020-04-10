@@ -53,7 +53,7 @@ func textHTML(watchedMovies []movie, recommendedMovies []movie) string {
 </html>`, textHTMLMovies(watchedMovies), textHTMLMovies(recommendedMovies))
 }
 
-func textHTMLRecommendedMovie(movie movie) string {
+func textHTMLStructure(movie movie) string {
 	return fmt.Sprintf(`			<div id="Movie">
 				<hr />
 				<p id="Cover" style="display: none;" title="Cover">%s</p>
@@ -80,7 +80,7 @@ func textHTMLMovies(movies []movie) string {
 	var html string
 
 	for _, movie := range movies {
-		html += textHTMLRecommendedMovie(movie)
+		html += textHTMLStructure(movie)
 	}
 
 	if len(html) <= 0 {

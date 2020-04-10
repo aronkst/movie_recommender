@@ -3,7 +3,6 @@ package main
 import (
 	"fmt"
 	"io/ioutil"
-	"os"
 	"strings"
 
 	"github.com/PuerkitoBio/goquery"
@@ -32,8 +31,6 @@ func readWatchedMovies() []string {
 			}
 		}
 	}
-
-	os.Exit(0)
 
 	return uniqueArrayString(database)
 }
