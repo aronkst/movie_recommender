@@ -54,6 +54,9 @@ func textHTML(watchedMovies []movie, recommendedMovies []movie) string {
 				font-weight: bold;
 				padding: 0 10px 10px 0;
 			}
+			.tableTdValue {
+				padding-bottom: 10px;
+			}
 			.imgRecommendedBy {
 				margin: 5px 5px 0 0;
 				width: 70px;
@@ -88,27 +91,27 @@ func textHTMLStructure(movie movie) string {
 				<table>
 					<tr>
 						<td class="tableTd">Summary:</td>
-						<td id="Summary">%s</td>
+						<td id="Summary" class="tableTdValue">%s</td>
 					</tr>
 					<tr>
 						<td class="tableTd">Year:</td>
-						<td id="Year">%d</td>
+						<td id="Year" class="tableTdValue">%d</td>
 					</tr>
 					<tr>
 						<td class="tableTd">IMDb Score:</td>
-						<td id="Score">%f</td>
+						<td id="Score" class="tableTdValue">%f</td>
 					</tr>
 					<tr>
 						<td class="tableTd">IMDb Amount of Votes:</td>
-						<td id="AmountOfVotes">%d</td>
+						<td id="AmountOfVotes" class="tableTdValue">%d</td>
 					</tr>
 					<tr>
 						<td class="tableTd">Metascore:</td>
-						<td id="Metascore">%d</td>
+						<td id="Metascore" class="tableTdValue">%d</td>
 					</tr>
 					<tr>
 						<td class="tableTd">Genres:</td>
-						<td id="Genres">%s</td>
+						<td id="Genres" class="tableTdValue">%s</td>
 					</tr>
 					<tr>
 						<td class="tableTd">Recommended by:</td>
