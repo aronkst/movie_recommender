@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"io/ioutil"
+	"os"
 	"strings"
 
 	"github.com/PuerkitoBio/goquery"
@@ -23,11 +24,16 @@ func readWatchedMovies() []string {
 				panic(err)
 			}
 			for _, file := range files {
-				imdb := strings.Split(file.Name(), "__")[1]
-				database = append(database, imdb)
+				like := strings.Split(file.Name(), "__")[3]
+				if like[0:1] == "1" {
+					imdb := strings.Split(file.Name(), "__")[1]
+					database = append(database, imdb)
+				}
 			}
 		}
 	}
+
+	os.Exit(0)
 
 	return uniqueArrayString(database)
 }
