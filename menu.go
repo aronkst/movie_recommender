@@ -31,11 +31,11 @@ func input(message string) string {
 func menu() {
 	clearScreen()
 
-	fmt.Println("Movie Recommender")
-	fmt.Println("\n[1] Add a new movie")
-	fmt.Println("\n[2] Make the HTML")
+	fmt.Println("Movie Recommender.")
+	fmt.Println("\n[1] Add a new movie.")
+	fmt.Println("\n[2] Make the HTML.")
 
-	value := input("\nSelect one of the options")
+	value := input("\nSelect one of the options.")
 	switch value {
 	case "1":
 		menuAddNewMovie()
@@ -107,7 +107,7 @@ func menuAddNewMovie() {
 
 	var like int64
 	for {
-		likeString := input("\nDid you like the movie? [0] for No and [1] for Yes")
+		likeString := input("\nDid you like the movie? [0] for No and [1] for Yes.")
 		if likeString == "0" || likeString == "1" {
 			like = stringToInt(likeString)
 			break
