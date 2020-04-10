@@ -17,7 +17,7 @@ func readWatchedMovies() []string {
 	}
 
 	for _, folder := range folders {
-		if folder.IsDir() && folder.Name() != ".git" {
+		if folder.IsDir() && folder.Name() != ".git" && folder.Name() != ".covers" {
 			files, err := ioutil.ReadDir(fmt.Sprintf("./%s/", folder.Name()))
 			if err != nil {
 				panic(err)
@@ -72,7 +72,7 @@ func loadMovieFromHTML(document *goquery.Document, selector string) []movie {
 			Points:            stringToInt(getValueFromSiteSelection(s, "p#Points", "")),
 			Genres:            strings.Split(getValueFromSiteSelection(s, "p#Genres", ""), ", "),
 			Cover:             getValueFromSiteSelection(s, "p#Cover", ""),
-			CoverSmall:        getValueFromSiteSelection(s, "img#CoverSmall", "src"),
+			CoverSmall:        getValueFromSiteSelection(s, "p#CoverSmall", ""),
 			RecommendedMovies: strings.Split(getValueFromSiteSelection(s, "p#RecommendedMovies", ""), ", "),
 			RecommendedBy:     strings.Split(getValueFromSiteSelection(s, "p#RecommendedBy", ""), ", "),
 		}

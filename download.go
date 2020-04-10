@@ -20,7 +20,7 @@ func checkFolderDownloadCover(date string) {
 }
 
 func checkFolderDownloadSmallCover() {
-	folder := "./covers"
+	folder := "./.covers"
 	if _, err := os.Stat(folder); os.IsNotExist(err) {
 		os.Mkdir(folder, os.ModePerm)
 	}
@@ -43,10 +43,10 @@ func downloadCover(movie movie, date string, like int64) {
 	downloadImage(movie.Cover, filename)
 }
 
-func downloadSmallCover(movie movie, date string, like int64) {
+func downloadSmallCover(movie movie) {
 	checkFolderDownloadSmallCover()
 
-	filename := fmt.Sprintf("./covers/%s.jpg", movie.IMDb)
+	filename := fmt.Sprintf("./.covers/%s.jpg", movie.IMDb)
 
 	if fileExists(filename) == false {
 		downloadImage(movie.CoverSmall, filename)

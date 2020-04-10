@@ -57,9 +57,10 @@ func textHTMLStructure(movie movie) string {
 	return fmt.Sprintf(`			<div id="Movie">
 				<hr />
 				<p id="Cover" style="display: none;" title="Cover">%s</p>
+				<p id="CoverSmall" style="display: none;" title="Small Cover">%s</p>
 				<p id="RecommendedMovies" style="display: none;" title="Recommended Movies">%s</p>
 				<p id="IMDb" title="IMDb">%s</p>
-				<img id="CoverSmall" src="%s" title="Small Cover" />
+				<img id="CoverLocal" src="./.covers/%s.jpg" title="Cover" />
 				<h2 id="Title" title="Title">%s</h2>
 				<p id="Summary" title="Summary">%s</p>
 				<p id="Year" title="Year">%d</p>
@@ -69,8 +70,8 @@ func textHTMLStructure(movie movie) string {
 				<p id="Points" title="Points">%d</p>
 				<p id="Genres" title="Genres">%s</p>
 				<p id="RecommendedBy" title="Recommended By">%s</p>
-			</div>%s`, movie.Cover, strings.Join(movie.RecommendedMovies, ", "),
-		movie.IMDb, movie.CoverSmall, movie.Title, movie.Summary, movie.Year,
+			</div>%s`, movie.Cover, movie.CoverSmall, strings.Join(movie.RecommendedMovies, ", "),
+		movie.IMDb, movie.IMDb, movie.Title, movie.Summary, movie.Year,
 		movie.Score, movie.AmountOfVotes, movie.Metascore, movie.Points,
 		strings.Join(movie.Genres, ", "), strings.Join(movie.RecommendedBy, ", "),
 		"\n")
@@ -99,6 +100,7 @@ func makeHTML() {
 	for _, imdb := range watchedMovies {
 		if contains, _ := findMovieIMDb(watchedMoviesHTML, imdb); contains == false {
 			movie := getMovie(imdb)
+			downloadSmallCover(movie)
 			newWatchedMovies = append(newWatchedMovies, movie)
 		}
 	}
@@ -113,6 +115,7 @@ func makeHTML() {
 					recommendedMovies[index].RecommendedBy = append(recommendedMovies[index].RecommendedBy, movie.Title)
 				} else {
 					recommendedMovie := getMovie(recommendedMovieIMDb)
+					downloadSmallCover(recommendedMovie)
 					recommendedMovie.RecommendedBy = []string{movie.Title}
 					recommendedMovies = append(recommendedMovies, recommendedMovie)
 				}
