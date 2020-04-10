@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"os"
 	"regexp"
 	"strconv"
 	"strings"
@@ -79,4 +80,11 @@ func findMovieIMDb(movies []movie, imdb string) (bool, int) {
 		}
 	}
 	return false, -1
+}
+
+func fileExists(file string) bool {
+	if _, err := os.Stat(file); err == nil {
+		return true
+	}
+	return false
 }

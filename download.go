@@ -48,7 +48,9 @@ func downloadSmallCover(movie movie, date string, like int64) {
 
 	filename := fmt.Sprintf("./covers/%s.jpg", movie.IMDb)
 
-	downloadImage(movie.CoverSmall, filename)
+	if fileExists(filename) == false {
+		downloadImage(movie.CoverSmall, filename)
+	}
 }
 
 func downloadImage(url string, fileString string) {
