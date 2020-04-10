@@ -62,19 +62,20 @@ func loadMovieFromHTML(document *goquery.Document, selector string) []movie {
 
 	document.Find(selector).Each(func(i int, s *goquery.Selection) {
 		movie := movie{
-			IMDb:              getValueFromSiteSelection(s, "p#IMDb", ""),
-			Title:             getValueFromSiteSelection(s, "h2#Title", ""),
-			Year:              stringToInt(getValueFromSiteSelection(s, "p#Year", "")),
-			Summary:           getValueFromSiteSelection(s, "p#Summary", ""),
-			Score:             stringToFloat(getValueFromSiteSelection(s, "p#Score", "")),
-			AmountOfVotes:     stringToInt(getValueFromSiteSelection(s, "p#AmountOfVotes", "")),
-			Metascore:         stringToInt(getValueFromSiteSelection(s, "p#Metascore", "")),
-			Points:            stringToInt(getValueFromSiteSelection(s, "p#Points", "")),
-			Genres:            strings.Split(getValueFromSiteSelection(s, "p#Genres", ""), ", "),
-			Cover:             getValueFromSiteSelection(s, "p#Cover", ""),
-			CoverSmall:        getValueFromSiteSelection(s, "p#CoverSmall", ""),
-			RecommendedMovies: strings.Split(getValueFromSiteSelection(s, "p#RecommendedMovies", ""), ", "),
-			RecommendedBy:     strings.Split(getValueFromSiteSelection(s, "p#RecommendedBy", ""), ", "),
+			IMDb:                getValueFromSiteSelection(s, "p#IMDb", ""),
+			Title:               getValueFromSiteSelection(s, "h2#Title", ""),
+			Year:                stringToInt(getValueFromSiteSelection(s, "td#Year", "")),
+			Summary:             getValueFromSiteSelection(s, "td#Summary", ""),
+			Score:               stringToFloat(getValueFromSiteSelection(s, "td#Score", "")),
+			AmountOfVotes:       stringToInt(getValueFromSiteSelection(s, "td#AmountOfVotes", "")),
+			Metascore:           stringToInt(getValueFromSiteSelection(s, "td#Metascore", "")),
+			Points:              stringToInt(getValueFromSiteSelection(s, "p#Points", "")),
+			Genres:              strings.Split(getValueFromSiteSelection(s, "td#Genres", ""), ", "),
+			Cover:               getValueFromSiteSelection(s, "p#Cover", ""),
+			CoverSmall:          getValueFromSiteSelection(s, "p#CoverSmall", ""),
+			RecommendedMovies:   strings.Split(getValueFromSiteSelection(s, "p#RecommendedMovies", ""), ", "),
+			RecommendedBy:       strings.Split(getValueFromSiteSelection(s, "p#RecommendedBy", ""), ", "),
+			RecommendedByTitles: strings.Split(getValueFromSiteSelection(s, "p#RecommendedByTitles", ""), ", "),
 		}
 		movies = append(movies, movie)
 	})

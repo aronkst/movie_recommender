@@ -8,19 +8,20 @@ import (
 )
 
 type movie struct {
-	IMDb              string
-	Title             string
-	Year              int64
-	Summary           string
-	Score             float64
-	AmountOfVotes     int64
-	Metascore         int64
-	Points            int64
-	Genres            []string
-	Cover             string
-	CoverSmall        string
-	RecommendedMovies []string
-	RecommendedBy     []string
+	IMDb                string
+	Title               string
+	Year                int64
+	Summary             string
+	Score               float64
+	AmountOfVotes       int64
+	Metascore           int64
+	Points              int64
+	Genres              []string
+	Cover               string
+	CoverSmall          string
+	RecommendedMovies   []string
+	RecommendedBy       []string
+	RecommendedByTitles []string
 }
 
 func getMovie(imdb string) movie {
@@ -42,19 +43,20 @@ func getMovie(imdb string) movie {
 	}
 
 	return movie{
-		IMDb:              imdb,
-		Title:             getTitleToMovie(document),
-		Year:              getYearToMovie(document),
-		Summary:           getSummaryToMovie(document),
-		Score:             score,
-		AmountOfVotes:     amountOfVotes,
-		Metascore:         metascore,
-		Points:            points,
-		Genres:            getGenresToMovie(document),
-		Cover:             getCoverToMovie(document),
-		CoverSmall:        getCoverSmallToMovie(document),
-		RecommendedMovies: getRecommendedMoviesToMovie(document),
-		RecommendedBy:     []string{},
+		IMDb:                imdb,
+		Title:               getTitleToMovie(document),
+		Year:                getYearToMovie(document),
+		Summary:             getSummaryToMovie(document),
+		Score:               score,
+		AmountOfVotes:       amountOfVotes,
+		Metascore:           metascore,
+		Points:              points,
+		Genres:              getGenresToMovie(document),
+		Cover:               getCoverToMovie(document),
+		CoverSmall:          getCoverSmallToMovie(document),
+		RecommendedMovies:   getRecommendedMoviesToMovie(document),
+		RecommendedBy:       []string{},
+		RecommendedByTitles: []string{},
 	}
 }
 

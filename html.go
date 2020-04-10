@@ -40,6 +40,25 @@ func textHTML(watchedMovies []movie, recommendedMovies []movie) string {
 <html>
 	<head>
 		<title>Recommended Movies</title>
+		<style>
+			h2 {
+				margin: 10px 0;
+			}
+			hr {
+				margin-bottom: 30px;
+			}
+			.hide {
+				display: none;
+			}
+			.tableTd {
+				font-weight: bold;
+				padding: 0 10px 10px 0;
+			}
+			.imgRecommendedBy {
+				margin: 5px 5px 0 0;
+				width: 70px;
+			}
+		</style> 
 	</head>
 	<body>
 		<h1>Recommended Movies</h1>
@@ -56,25 +75,61 @@ func textHTML(watchedMovies []movie, recommendedMovies []movie) string {
 func textHTMLStructure(movie movie) string {
 	return fmt.Sprintf(`			<div id="Movie">
 				<hr />
-				<p id="Cover" style="display: none;" title="Cover">%s</p>
-				<p id="CoverSmall" style="display: none;" title="Small Cover">%s</p>
-				<p id="RecommendedMovies" style="display: none;" title="Recommended Movies">%s</p>
-				<p id="IMDb" title="IMDb">%s</p>
-				<img id="CoverLocal" src="./.covers/%s.jpg" title="Cover" />
-				<h2 id="Title" title="Title">%s</h2>
-				<p id="Summary" title="Summary">%s</p>
-				<p id="Year" title="Year">%d</p>
-				<p id="Score" title="Score">%f</p>
-				<p id="AmountOfVotes" title="Amount Of Votes">%d</p>
-				<p id="Metascore" title="Metascore">%d</p>
-				<p id="Points" title="Points">%d</p>
-				<p id="Genres" title="Genres">%s</p>
-				<p id="RecommendedBy" title="Recommended By">%s</p>
-			</div>%s`, movie.Cover, movie.CoverSmall, strings.Join(movie.RecommendedMovies, ", "),
-		movie.IMDb, movie.IMDb, movie.Title, movie.Summary, movie.Year,
-		movie.Score, movie.AmountOfVotes, movie.Metascore, movie.Points,
-		strings.Join(movie.Genres, ", "), strings.Join(movie.RecommendedBy, ", "),
-		"\n")
+				<p id="IMDb" class="hide">%s</p>
+				<p id="Cover" class="hide">%s</p>
+				<p id="CoverSmall" class="hide">%s</p>
+				<p id="Points" class="hide">%d</p>
+				<p id="RecommendedMovies" class="hide">%s</p>
+				<p id="RecommendedBy" class="hide">%s</p>
+				<p id="RecommendedByTitles" class="hide">%s</p>
+				<img id="CoverLocal" src="./.covers/%s.jpg" />
+				<a href="https://www.imdb.com/title/%s/" target="_blank">Go to IMDb</a>
+				<h2 id="Title">%s</h2>
+				<table>
+					<tr>
+						<td class="tableTd">Summary:</td>
+						<td id="Summary">%s</td>
+					</tr>
+					<tr>
+						<td class="tableTd">Year:</td>
+						<td id="Year">%d</td>
+					</tr>
+					<tr>
+						<td class="tableTd">IMDb Score:</td>
+						<td id="Score">%f</td>
+					</tr>
+					<tr>
+						<td class="tableTd">IMDb Amount of Votes:</td>
+						<td id="AmountOfVotes">%d</td>
+					</tr>
+					<tr>
+						<td class="tableTd">Metascore:</td>
+						<td id="Metascore">%d</td>
+					</tr>
+					<tr>
+						<td class="tableTd">Genres:</td>
+						<td id="Genres">%s</td>
+					</tr>
+					<tr>
+						<td class="tableTd">Recommended by:</td>
+						<td></td>
+					</tr>
+				</table>
+				<div>%s</div>
+				<br />
+			</div>%s`, movie.IMDb, movie.Cover, movie.CoverSmall, movie.Points, strings.Join(movie.RecommendedMovies, ", "),
+		strings.Join(movie.RecommendedBy, ", "), strings.Join(movie.RecommendedByTitles, ", "), movie.IMDb, movie.IMDb,
+		movie.Title, movie.Summary, movie.Year, movie.Score, movie.AmountOfVotes, movie.Metascore,
+		strings.Join(movie.Genres, ", "), coversRecommendedBy(movie), "\n")
+}
+
+func coversRecommendedBy(movie movie) string {
+	var imgCovers string
+	for index, recommendedMovie := range movie.RecommendedBy {
+		imgCovers += fmt.Sprintf(`<img src="./.covers/%s.jpg" title="%s" class="imgRecommendedBy" />`,
+			recommendedMovie, movie.RecommendedByTitles[index])
+	}
+	return imgCovers
 }
 
 func textHTMLMovies(movies []movie) string {
@@ -112,11 +167,13 @@ func makeHTML() {
 			if contains, _ := findMovieIMDb(watchedMoviesHTML, recommendedMovieIMDb); contains == false {
 				if contains, index := findMovieIMDb(recommendedMovies, recommendedMovieIMDb); contains {
 					recommendedMovies[index].Points += movie.Points
-					recommendedMovies[index].RecommendedBy = append(recommendedMovies[index].RecommendedBy, movie.Title)
+					recommendedMovies[index].RecommendedBy = append(recommendedMovies[index].RecommendedBy, movie.IMDb)
+					recommendedMovies[index].RecommendedByTitles = append(recommendedMovies[index].RecommendedByTitles, movie.Title)
 				} else {
 					recommendedMovie := getMovie(recommendedMovieIMDb)
 					downloadSmallCover(recommendedMovie)
-					recommendedMovie.RecommendedBy = []string{movie.Title}
+					recommendedMovie.RecommendedBy = []string{movie.IMDb}
+					recommendedMovie.RecommendedByTitles = []string{movie.Title}
 					recommendedMovies = append(recommendedMovies, recommendedMovie)
 				}
 			}
