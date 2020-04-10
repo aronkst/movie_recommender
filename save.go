@@ -19,16 +19,16 @@ func checkFolderDownloadImage(date string) {
 	}
 }
 
-func fileNameDownloadCover(date string, movie movie) string {
+func fileNameDownloadCover(date string, movie movie, like int64) string {
 	regex, err := regexp.Compile("[^a-zA-Z0-9 ]+")
 	if err != nil {
 		panic(err)
 	}
 	movieTitle := regex.ReplaceAllString(movie.Title, "")
-	return fmt.Sprintf("%s__%s__%s.jpg", date, movie.IMDb, movieTitle)
+	return fmt.Sprintf("%s__%s__%s__%d.jpg", date, movie.IMDb, movieTitle, like)
 }
 
-func downloadCover(movie movie, date string) {
+func downloadCover(movie movie, date string, like int64) {
 	image, err := http.Get(movie.Cover)
 	if err != nil {
 		panic(err)
@@ -37,7 +37,7 @@ func downloadCover(movie movie, date string) {
 
 	checkFolderDownloadImage(date)
 
-	filename := fmt.Sprintf("%s/%s", getFolderDownloadImage(date), fileNameDownloadCover(date, movie))
+	filename := fmt.Sprintf("%s/%s", getFolderDownloadImage(date), fileNameDownloadCover(date, movie, like))
 	file, err := os.Create(filename)
 	if err != nil {
 		panic(err)

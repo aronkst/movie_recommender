@@ -61,7 +61,7 @@ func menuAddNewMovie() {
 		}
 	}
 
-	value := stringToInt(input("\nChoose movie from list above or enter '0' to perform a new search."))
+	value := stringToInt(input("\nChoose movie from list above or enter [0] to perform a new search."))
 	if value <= 0 || value > 20 || value > int64(len(movies)) {
 		menuAddNewMovie()
 	} else {
@@ -70,7 +70,15 @@ func menuAddNewMovie() {
 			date = "00000000"
 		}
 
+		var like int64
+		for {
+			like = stringToInt(input("\nDid you like the movie? [0] for No and [1] for Yes"))
+			if like == 0 || like == 1 {
+				break
+			}
+		}
+
 		movie := getMovie(movies[value-1].IMDB)
-		downloadCover(movie, date)
+		downloadCover(movie, date, like)
 	}
 }

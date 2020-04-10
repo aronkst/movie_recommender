@@ -52,7 +52,7 @@ func replaceCommentHTML(value string) string {
 
 func formatSearchValue(search string) string {
 	newSearch := strings.TrimSpace(search)
-	return strings.ReplaceAll(newSearch, " ", "+")
+	return strings.ReplaceAll(newSearch, " ", "%20")
 }
 
 func urlIMDBSearch(search string) string {

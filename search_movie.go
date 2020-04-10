@@ -52,8 +52,7 @@ func getYearToSearchMovie(selection *goquery.Selection) int64 {
 
 func getIMDBToSearchMovie(selection *goquery.Selection) string {
 	imdb := getValueFromSiteSelection(selection, "td.result_text a", "href")
-	imdb = imdb[0:16]
+	imdb = regexReplace(imdb, `(\/\?ref_=fn_ft_tt_)([0-9]*).*?`, "")
 	imdb = strings.ReplaceAll(imdb, "/title/", "")
-	imdb = strings.ReplaceAll(imdb, "/", "")
 	return imdb
 }
