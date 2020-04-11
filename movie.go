@@ -72,7 +72,7 @@ func getMovieFromSite(imdb string) movie {
 		RecommendedByTitles: []string{},
 	}
 
-	createMovieJSONData(movie)
+	createMovieJSONFile(movie)
 	downloadSmallCover(movie)
 
 	return movie
@@ -93,7 +93,7 @@ func getMovieFromJSON(jsonFile string) movie {
 	return movie
 }
 
-func createMovieJSONData(movie movie) {
+func createMovieJSONFile(movie movie) {
 	file, err := json.MarshalIndent(movie, "", "  ")
 	if err != nil {
 		panic(err)

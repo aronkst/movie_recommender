@@ -155,7 +155,7 @@ func createRecommendedMovies() {
 	var newWatchedMovies []movie
 
 	watchedMovies := readWatchedMovies()
-	watchedMoviesHTML, recommendedMovies := readWatchedAndRecommendedMoviesFromHTML()
+	watchedMoviesHTML, recommendedMovies := readWatchedAndRecommendedMovies()
 
 	for _, imdb := range watchedMovies {
 		if contains, _ := findMovieByIMDb(watchedMoviesHTML, imdb); contains == false {
