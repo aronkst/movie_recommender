@@ -8,8 +8,8 @@ import (
 	"strings"
 )
 
-func checkHTML() {
-	file := "Recommended Movies.html"
+func deleteRecommendedMoviesHTMLFileIfExists() {
+	file := "./Recommended Movies.html"
 	if _, err := os.Stat(file); os.IsNotExist(err) == false {
 		err := os.Remove(file)
 		if err != nil {
@@ -18,8 +18,8 @@ func checkHTML() {
 	}
 }
 
-func createHTML(watchedMovies []movie, recommendedMovies []movie) {
-	checkHTML()
+func createRecommendedMoviesHTMLFile(watchedMovies []movie, recommendedMovies []movie) {
+	deleteRecommendedMoviesHTMLFileIfExists()
 
 	sort.Slice(watchedMovies, func(i, j int) bool {
 		return watchedMovies[i].Points > watchedMovies[j].Points
@@ -28,8 +28,9 @@ func createHTML(watchedMovies []movie, recommendedMovies []movie) {
 		return recommendedMovies[i].Points > recommendedMovies[j].Points
 	})
 
-	bytes := []byte(textHTML(watchedMovies, recommendedMovies))
-	err := ioutil.WriteFile("Recommended Movies.html", bytes, os.ModePerm)
+	html := textHTML(watchedMovies, recommendedMovies)
+	bytes := []byte(html)
+	err := ioutil.WriteFile("./Recommended Movies.html", bytes, os.ModePerm)
 	if err != nil {
 		panic(err)
 	}
@@ -75,7 +76,7 @@ func textHTML(watchedMovies []movie, recommendedMovies []movie) string {
 </html>`, textHTMLMovies(watchedMovies), textHTMLMovies(recommendedMovies))
 }
 
-func textHTMLStructure(movie movie) string {
+func textHTMLMovie(movie movie) string {
 	return fmt.Sprintf(`			<div id="Movie">
 				<hr />
 				<p id="IMDb" class="hide">%s</p>
@@ -120,13 +121,14 @@ func textHTMLStructure(movie movie) string {
 				</table>
 				<div>%s</div>
 				<br />
-			</div>%s`, movie.IMDb, movie.Cover, movie.CoverSmall, movie.Points, strings.Join(movie.RecommendedMovies, ", "),
-		strings.Join(movie.RecommendedBy, ", "), strings.Join(movie.RecommendedByTitles, ", "), movie.IMDb, movie.IMDb,
-		movie.Title, movie.Summary, movie.Year, movie.Score, movie.AmountOfVotes, movie.Metascore,
-		strings.Join(movie.Genres, ", "), coversRecommendedBy(movie), "\n")
+			</div>%s`, movie.IMDb, movie.Cover, movie.CoverSmall, movie.Points,
+		strings.Join(movie.RecommendedMovies, ", "), strings.Join(movie.RecommendedBy, ", "),
+		strings.Join(movie.RecommendedByTitles, ", "), movie.IMDb, movie.IMDb,
+		movie.Title, movie.Summary, movie.Year, movie.Score, movie.AmountOfVotes,
+		movie.Metascore, strings.Join(movie.Genres, ", "), textHTMLRecommendedByCovers(movie), "\n")
 }
 
-func coversRecommendedBy(movie movie) string {
+func textHTMLRecommendedByCovers(movie movie) string {
 	var imgCovers string
 	for index, recommendedMovie := range movie.RecommendedBy {
 		imgCovers += fmt.Sprintf(`<img src="./.covers/%s.jpg" title="%s" class="imgRecommendedBy" />`,
@@ -139,7 +141,7 @@ func textHTMLMovies(movies []movie) string {
 	var html string
 
 	for _, movie := range movies {
-		html += textHTMLStructure(movie)
+		html += textHTMLMovie(movie)
 	}
 
 	if len(html) <= 0 {
@@ -149,7 +151,7 @@ func textHTMLMovies(movies []movie) string {
 	return html[0 : len(html)-1]
 }
 
-func makeHTML() {
+func createRecommendedMovies() {
 	var newWatchedMovies []movie
 
 	watchedMovies := readWatchedMovies()
@@ -183,5 +185,5 @@ func makeHTML() {
 		}
 	}
 
-	createHTML(watchedMoviesHTML, recommendedMovies)
+	createRecommendedMoviesHTMLFile(watchedMoviesHTML, recommendedMovies)
 }

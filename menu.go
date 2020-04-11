@@ -40,7 +40,7 @@ func menu() {
 	case "1":
 		menuAddNewMovie()
 	case "2":
-		makeHTML()
+		createRecommendedMovies()
 	default:
 		menu()
 	}
