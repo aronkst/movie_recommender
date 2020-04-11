@@ -1,8 +1,10 @@
 package main
 
 import (
+	"bufio"
 	"fmt"
 	"os"
+	"os/exec"
 	"regexp"
 	"strconv"
 	"strings"
@@ -99,4 +101,24 @@ func validMovie(movie movie) bool {
 	return movie.Cover != "" && movie.CoverSmall != "" && movie.Score > 0 &&
 		movie.Year > 0 && movie.AmountOfVotes > 0 && len(movie.Genres) > 0 &&
 		movie.Summary != "" && movie.Summary != `Add a Plot »`
+}
+
+func clearScreen() {
+	cmd := exec.Command("clear")
+	cmd.Stdout = os.Stdout
+	cmd.Run()
+}
+
+func input(message string) string {
+	fmt.Printf("%s\n\n", message)
+
+	input := bufio.NewReader(os.Stdin)
+	value, err := input.ReadString('\n')
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Println()
+
+	return clearString(value)
 }
