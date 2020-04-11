@@ -53,16 +53,6 @@ func replaceCommentHTML(value string) string {
 	return strings.Replace(newValue, " -->", "", 1)
 }
 
-func formatSearchValue(search string) string {
-	newSearch := strings.TrimSpace(search)
-	return strings.ReplaceAll(newSearch, " ", "%20")
-}
-
-func urlIMDBSearch(search string) string {
-	searchFormated := formatSearchValue(search)
-	return fmt.Sprintf("https://www.imdb.com/find?q=%s&s=tt&ttype=ft", searchFormated)
-}
-
 func uniqueArrayString(array []string) []string {
 	keys := make(map[string]bool)
 	list := []string{}

@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"strings"
 
 	"github.com/PuerkitoBio/goquery"
@@ -12,8 +13,9 @@ type searchMovie struct {
 	IMDB  string
 }
 
-func getSearchMovies(seach string) []searchMovie {
-	url := urlIMDBSearch(seach)
+func getSearchMovies(search string) []searchMovie {
+	search = strings.ReplaceAll(search, " ", "%20")
+	url := fmt.Sprintf("https://www.imdb.com/find?q=%s&s=tt&ttype=ft", search)
 	document, err := loadSite(url)
 	if err != nil {
 		panic(err)
@@ -23,9 +25,9 @@ func getSearchMovies(seach string) []searchMovie {
 
 	document.Find("tr[class*='findResult']").Each(func(i int, s *goquery.Selection) {
 		searchMovie := searchMovie{
-			Title: getTitleToSearchMovie(s),
-			Year:  getYearToSearchMovie(s),
-			IMDB:  getIMDBToSearchMovie(s),
+			Title: getTitleFromSiteToSearchMovie(s),
+			Year:  getYearFromSiteToSearchMovie(s),
+			IMDB:  getIMDBFromSiteToSearchMovie(s),
 		}
 		movies = append(movies, searchMovie)
 	})
@@ -33,12 +35,12 @@ func getSearchMovies(seach string) []searchMovie {
 	return movies
 }
 
-func getTitleToSearchMovie(selection *goquery.Selection) string {
+func getTitleFromSiteToSearchMovie(selection *goquery.Selection) string {
 	title := getValueFromSiteSelection(selection, "td.result_text a", "")
 	return title
 }
 
-func getYearToSearchMovie(selection *goquery.Selection) int64 {
+func getYearFromSiteToSearchMovie(selection *goquery.Selection) int64 {
 	yearString := getValueFromSiteSelection(selection, "td.result_text", "")
 	yearString = regexReplace(yearString, "([[0-9]+)", ";$1")
 	index := strings.Index(yearString, "(;") + 2
@@ -50,7 +52,7 @@ func getYearToSearchMovie(selection *goquery.Selection) int64 {
 	return year
 }
 
-func getIMDBToSearchMovie(selection *goquery.Selection) string {
+func getIMDBFromSiteToSearchMovie(selection *goquery.Selection) string {
 	imdb := getValueFromSiteSelection(selection, "td.result_text a", "href")
 	imdb = regexReplace(imdb, `(\/\?ref_=fn_ft_tt_)([0-9]*).*?`, "")
 	imdb = strings.ReplaceAll(imdb, "/title/", "")
