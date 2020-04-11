@@ -144,7 +144,7 @@ func getGenresToMovie(document *goquery.Document) []string {
 	var genres []string
 
 	document.Find("div.see-more.inline.canwrap").Eq(1).Find("a").Each(func(i int, s *goquery.Selection) {
-		genres = append(genres, getValueFromSiteSelectionInside(s, ""))
+		genres = append(genres, getValueFromSiteInsideSelection(s, ""))
 	})
 
 	return genres
@@ -174,7 +174,7 @@ func getRecommendedMoviesToMovie(document *goquery.Document) []string {
 	var recommendedMovies []string
 
 	document.Find("div.rec_item").Each(func(i int, s *goquery.Selection) {
-		recommendedMovies = append(recommendedMovies, getValueFromSiteSelectionInside(s, "data-tconst"))
+		recommendedMovies = append(recommendedMovies, getValueFromSiteInsideSelection(s, "data-tconst"))
 	})
 
 	return recommendedMovies
