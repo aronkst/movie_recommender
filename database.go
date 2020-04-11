@@ -17,7 +17,7 @@ func readWatchedMovies() []string {
 	}
 
 	for _, folder := range folders {
-		if folder.IsDir() && folder.Name() != ".git" && folder.Name() != ".covers" {
+		if folder.IsDir() && folder.Name() != ".git" && folder.Name() != ".covers" && folder.Name() != ".data" {
 			files, err := ioutil.ReadDir(fmt.Sprintf("./%s/", folder.Name()))
 			if err != nil {
 				panic(err)

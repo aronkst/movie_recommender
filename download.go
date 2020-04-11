@@ -54,6 +54,10 @@ func downloadSmallCover(movie movie) {
 }
 
 func downloadImage(url string, fileString string) {
+	if url == "" {
+		return
+	}
+
 	image, err := http.Get(url)
 	if err != nil {
 		panic(err)
