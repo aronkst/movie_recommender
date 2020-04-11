@@ -153,7 +153,7 @@ func makeHTML() {
 	var newWatchedMovies []movie
 
 	watchedMovies := readWatchedMovies()
-	watchedMoviesHTML, recommendedMovies := readHTMLMovies()
+	watchedMoviesHTML, recommendedMovies := readWatchedAndRecommendedMoviesFromHTML()
 
 	for _, imdb := range watchedMovies {
 		if contains, _ := findMovieIMDb(watchedMoviesHTML, imdb); contains == false {

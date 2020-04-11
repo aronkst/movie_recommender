@@ -35,7 +35,7 @@ func readWatchedMovies() []string {
 	return uniqueArrayString(database)
 }
 
-func readHTML() string {
+func loadRecommendedMoviesHTMLFile() string {
 	file, err := ioutil.ReadFile("Recommended Movies.html")
 	if err != nil {
 		return ""
@@ -43,21 +43,21 @@ func readHTML() string {
 	return replaceCommentHTML(string(file))
 }
 
-func readHTMLMovies() ([]movie, []movie) {
-	document, err := goquery.NewDocumentFromReader(strings.NewReader(readHTML()))
+func readWatchedAndRecommendedMoviesFromHTML() ([]movie, []movie) {
+	document, err := goquery.NewDocumentFromReader(strings.NewReader(loadRecommendedMoviesHTMLFile()))
 	if err != nil {
 		panic(err)
 	}
 
 	var watchedMovies, recommendedMovies []movie
 
-	watchedMovies = loadMovieFromHTML(document, "div#WatchedMovies div#Movie")
-	recommendedMovies = loadMovieFromHTML(document, "div#RecommendedMovies div#Movie")
+	watchedMovies = getMoviesFromHTML(document, "div#WatchedMovies div#Movie")
+	recommendedMovies = getMoviesFromHTML(document, "div#RecommendedMovies div#Movie")
 
 	return watchedMovies, recommendedMovies
 }
 
-func loadMovieFromHTML(document *goquery.Document, selector string) []movie {
+func getMoviesFromHTML(document *goquery.Document, selector string) []movie {
 	var movies []movie
 
 	document.Find(selector).Each(func(i int, s *goquery.Selection) {
