@@ -99,7 +99,7 @@ func setMovieToJSON(movie movie) {
 		panic(err)
 	}
 
-	folderExistsElseCreate("./.data")
+	createFolderIfNotExists("./.data")
 
 	jsonFile := fmt.Sprintf("./.data/%s.json", movie.IMDb)
 

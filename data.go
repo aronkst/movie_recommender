@@ -36,7 +36,7 @@ func readWatchedMovies() []string {
 }
 
 func loadRecommendedMoviesHTMLFile() string {
-	file, err := ioutil.ReadFile("Recommended Movies.html")
+	file, err := ioutil.ReadFile("./Recommended Movies.html")
 	if err != nil {
 		return ""
 	}
