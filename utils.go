@@ -94,3 +94,9 @@ func folderExistsElseCreate(folder string) {
 		os.Mkdir(folder, os.ModePerm)
 	}
 }
+
+func validMovie(movie movie) bool {
+	return movie.Cover != "" && movie.CoverSmall != "" && movie.Score > 0 &&
+		movie.Year > 0 && movie.AmountOfVotes > 0 && len(movie.Genres) > 0 &&
+		movie.Summary != "" && movie.Summary != `Add a Plot »`
+}

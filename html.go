@@ -173,9 +173,11 @@ func makeHTML() {
 					recommendedMovies[index].RecommendedByTitles = append(recommendedMovies[index].RecommendedByTitles, movie.Title)
 				} else {
 					recommendedMovie := getMovie(recommendedMovieIMDb)
-					recommendedMovie.RecommendedBy = []string{movie.IMDb}
-					recommendedMovie.RecommendedByTitles = []string{movie.Title}
-					recommendedMovies = append(recommendedMovies, recommendedMovie)
+					if validMovie(recommendedMovie) {
+						recommendedMovie.RecommendedBy = []string{movie.IMDb}
+						recommendedMovie.RecommendedByTitles = []string{movie.Title}
+						recommendedMovies = append(recommendedMovies, recommendedMovie)
+					}
 				}
 			}
 		}
