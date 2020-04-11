@@ -1,23 +1,16 @@
 package main
 
 import (
-	"bufio"
-	"fmt"
 	"os"
-	"os/exec"
 	"regexp"
 	"strconv"
 	"strings"
 )
 
 func clearString(value string) string {
-	newValue := strings.TrimSpace(value)
-	newValue = strings.ReplaceAll(newValue, "\n", "")
-	return strings.ReplaceAll(newValue, "\r", "")
-}
-
-func urlIMDB(imdb string) string {
-	return fmt.Sprintf("https://www.imdb.com/title/%s", imdb)
+	value = strings.TrimSpace(value)
+	value = strings.ReplaceAll(value, "\n", "")
+	return strings.ReplaceAll(value, "\r", "")
 }
 
 func regexReplace(value string, regexOld string, regexNew string) string {
@@ -43,37 +36,6 @@ func stringToFloat(value string) float64 {
 	return number
 }
 
-func replacePointsAndCommas(value string) string {
-	newValue := strings.Replace(value, ".", "", -1)
-	return strings.Replace(newValue, ",", "", -1)
-}
-
-func replaceCommentHTML(value string) string {
-	newValue := strings.Replace(value, "<!-- ", "", 1)
-	return strings.Replace(newValue, " -->", "", 1)
-}
-
-func uniqueArrayString(array []string) []string {
-	keys := make(map[string]bool)
-	list := []string{}
-	for _, entry := range array {
-		if _, value := keys[entry]; !value {
-			keys[entry] = true
-			list = append(list, entry)
-		}
-	}
-	return list
-}
-
-func findMovieIMDb(movies []movie, imdb string) (bool, int) {
-	for index, movie := range movies {
-		if movie.IMDb == imdb {
-			return true, index
-		}
-	}
-	return false, -1
-}
-
 func fileExists(file string) bool {
 	if _, err := os.Stat(file); err == nil {
 		return true
@@ -85,30 +47,4 @@ func createFolderIfNotExists(folder string) {
 	if _, err := os.Stat(folder); os.IsNotExist(err) {
 		os.Mkdir(folder, os.ModePerm)
 	}
-}
-
-func validMovie(movie movie) bool {
-	return movie.Cover != "" && movie.CoverSmall != "" && movie.Score > 0 &&
-		movie.Year > 0 && movie.AmountOfVotes > 0 && len(movie.Genres) > 0 &&
-		movie.Summary != "" && movie.Summary != `Add a Plot »`
-}
-
-func clearScreen() {
-	cmd := exec.Command("clear")
-	cmd.Stdout = os.Stdout
-	cmd.Run()
-}
-
-func input(message string) string {
-	fmt.Printf("%s\n\n", message)
-
-	input := bufio.NewReader(os.Stdin)
-	value, err := input.ReadString('\n')
-	if err != nil {
-		panic(err)
-	}
-
-	fmt.Println()
-
-	return clearString(value)
 }

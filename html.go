@@ -158,7 +158,7 @@ func createRecommendedMovies() {
 	watchedMoviesHTML, recommendedMovies := readWatchedAndRecommendedMoviesFromHTML()
 
 	for _, imdb := range watchedMovies {
-		if contains, _ := findMovieIMDb(watchedMoviesHTML, imdb); contains == false {
+		if contains, _ := findMovieByIMDb(watchedMoviesHTML, imdb); contains == false {
 			movie := getMovie(imdb)
 			newWatchedMovies = append(newWatchedMovies, movie)
 		}
@@ -168,8 +168,8 @@ func createRecommendedMovies() {
 
 	for _, movie := range newWatchedMovies {
 		for _, recommendedMovieIMDb := range movie.RecommendedMovies {
-			if contains, _ := findMovieIMDb(watchedMoviesHTML, recommendedMovieIMDb); contains == false {
-				if contains, index := findMovieIMDb(recommendedMovies, recommendedMovieIMDb); contains {
+			if contains, _ := findMovieByIMDb(watchedMoviesHTML, recommendedMovieIMDb); contains == false {
+				if contains, index := findMovieByIMDb(recommendedMovies, recommendedMovieIMDb); contains {
 					recommendedMovies[index].Points += movie.Points
 					recommendedMovies[index].RecommendedBy = append(recommendedMovies[index].RecommendedBy, movie.IMDb)
 					recommendedMovies[index].RecommendedByTitles = append(recommendedMovies[index].RecommendedByTitles, movie.Title)
@@ -186,4 +186,19 @@ func createRecommendedMovies() {
 	}
 
 	createRecommendedMoviesHTMLFile(watchedMoviesHTML, recommendedMovies)
+}
+
+func findMovieByIMDb(movies []movie, imdb string) (bool, int) {
+	for index, movie := range movies {
+		if movie.IMDb == imdb {
+			return true, index
+		}
+	}
+	return false, -1
+}
+
+func validMovie(movie movie) bool {
+	return movie.Cover != "" && movie.CoverSmall != "" && movie.Score > 0 &&
+		movie.Year > 0 && movie.AmountOfVotes > 0 && len(movie.Genres) > 0 &&
+		movie.Summary != "" && movie.Summary != `Add a Plot »`
 }

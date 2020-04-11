@@ -32,7 +32,7 @@ func readWatchedMovies() []string {
 		}
 	}
 
-	return uniqueArrayString(database)
+	return uniqueValuesInArray(database)
 }
 
 func loadRecommendedMoviesHTMLFile() string {
@@ -40,7 +40,7 @@ func loadRecommendedMoviesHTMLFile() string {
 	if err != nil {
 		return ""
 	}
-	return replaceCommentHTML(string(file))
+	return replaceCommentInHTML(string(file))
 }
 
 func readWatchedAndRecommendedMoviesFromHTML() ([]movie, []movie) {
@@ -81,4 +81,21 @@ func getMoviesFromHTML(document *goquery.Document, selector string) []movie {
 	})
 
 	return movies
+}
+
+func replaceCommentInHTML(html string) string {
+	html = strings.Replace(html, "<!-- ", "", 1)
+	return strings.Replace(html, " -->", "", 1)
+}
+
+func uniqueValuesInArray(array []string) []string {
+	keys := make(map[string]bool)
+	list := []string{}
+	for _, entry := range array {
+		if _, value := keys[entry]; !value {
+			keys[entry] = true
+			list = append(list, entry)
+		}
+	}
+	return list
 }

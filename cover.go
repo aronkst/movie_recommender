@@ -7,13 +7,10 @@ import (
 	"os"
 )
 
-func coverImageFileName(date string, movie movie, like int64) string {
-	movieTitle := regexReplace(movie.Title, "[^a-zA-Z0-9 ]+", "")
-	return fmt.Sprintf("%s__%s__%s__%d.jpg", date, movie.IMDb, movieTitle, like)
-}
-
 func downloadCover(movie movie, date string, like int64) {
-	filename := fmt.Sprintf("./%s/%s", date[0:4], coverImageFileName(date, movie, like))
+	title := regexReplace(movie.Title, "[^a-zA-Z0-9 ]+", "")
+	filename := fmt.Sprintf("%s__%s__%s__%d.jpg", date, movie.IMDb, title, like)
+	filename = fmt.Sprintf("./%s/%s", date[0:4], filename)
 	downloadImage(movie.Cover, date[0:4], filename)
 }
 

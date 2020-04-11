@@ -179,3 +179,8 @@ func getRecommendedMoviesFromSiteToMovie(document *goquery.Document) []string {
 
 	return recommendedMovies
 }
+
+func replacePointsAndCommas(value string) string {
+	value = strings.Replace(value, ".", "", -1)
+	return strings.Replace(value, ",", "", -1)
+}
