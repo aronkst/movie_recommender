@@ -1,6 +1,10 @@
 package main
 
 import (
+	"encoding/json"
+	"fmt"
+	"io/ioutil"
+	"os"
 	"regexp"
 	"strings"
 
@@ -8,23 +12,32 @@ import (
 )
 
 type movie struct {
-	IMDb                string
-	Title               string
-	Year                int64
-	Summary             string
-	Score               float64
-	AmountOfVotes       int64
-	Metascore           int64
-	Points              int64
-	Genres              []string
-	Cover               string
-	CoverSmall          string
-	RecommendedMovies   []string
-	RecommendedBy       []string
-	RecommendedByTitles []string
+	IMDb                string   `json:"imdb"`
+	Title               string   `json:"title"`
+	Year                int64    `json:"year"`
+	Summary             string   `json:"summary"`
+	Score               float64  `json:"score"`
+	AmountOfVotes       int64    `json:"amount_of_votes"`
+	Metascore           int64    `json:"metascore"`
+	Points              int64    `json:"points"`
+	Genres              []string `json:"genres"`
+	Cover               string   `json:"cover"`
+	CoverSmall          string   `json:"cover_small"`
+	RecommendedMovies   []string `json:"recommended_movies"`
+	RecommendedBy       []string `json:"recommended_by"`
+	RecommendedByTitles []string `json:"recommended_by_titles"`
 }
 
 func getMovie(imdb string) movie {
+	jsonFile := fmt.Sprintf("./.data/%s.json", imdb)
+	if fileExists(jsonFile) {
+		return getMovieFromJSON(jsonFile)
+	}
+
+	return getMovieFromSite(imdb)
+}
+
+func getMovieFromSite(imdb string) movie {
 	url := urlIMDB(imdb)
 	document, err := loadSite(url)
 	if err != nil {
@@ -42,7 +55,7 @@ func getMovie(imdb string) movie {
 		points = int64(float64(float64(score+float64(float64(metascore)/10))/2) * float64(amountOfVotes))
 	}
 
-	return movie{
+	movie := movie{
 		IMDb:                imdb,
 		Title:               getTitleToMovie(document),
 		Year:                getYearToMovie(document),
@@ -57,6 +70,42 @@ func getMovie(imdb string) movie {
 		RecommendedMovies:   getRecommendedMoviesToMovie(document),
 		RecommendedBy:       []string{},
 		RecommendedByTitles: []string{},
+	}
+
+	setMovieToJSON(movie)
+	downloadSmallCover(movie)
+
+	return movie
+}
+
+func getMovieFromJSON(jsonFile string) movie {
+	var movie movie
+
+	file, err := os.Open(jsonFile)
+	if err != nil {
+		panic(err)
+	}
+	defer file.Close()
+
+	byteValue, _ := ioutil.ReadAll(file)
+	json.Unmarshal(byteValue, &movie)
+
+	return movie
+}
+
+func setMovieToJSON(movie movie) {
+	file, err := json.MarshalIndent(movie, "", "  ")
+	if err != nil {
+		panic(err)
+	}
+
+	folderExistsElseCreate("./.data")
+
+	jsonFile := fmt.Sprintf("./.data/%s.json", movie.IMDb)
+
+	err = ioutil.WriteFile(jsonFile, file, 0644)
+	if err != nil {
+		panic(err)
 	}
 }
 

@@ -88,3 +88,9 @@ func fileExists(file string) bool {
 	}
 	return false
 }
+
+func folderExistsElseCreate(folder string) {
+	if _, err := os.Stat(folder); os.IsNotExist(err) {
+		os.Mkdir(folder, os.ModePerm)
+	}
+}

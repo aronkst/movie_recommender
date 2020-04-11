@@ -158,7 +158,6 @@ func makeHTML() {
 	for _, imdb := range watchedMovies {
 		if contains, _ := findMovieIMDb(watchedMoviesHTML, imdb); contains == false {
 			movie := getMovie(imdb)
-			downloadSmallCover(movie)
 			newWatchedMovies = append(newWatchedMovies, movie)
 		}
 	}
@@ -174,7 +173,6 @@ func makeHTML() {
 					recommendedMovies[index].RecommendedByTitles = append(recommendedMovies[index].RecommendedByTitles, movie.Title)
 				} else {
 					recommendedMovie := getMovie(recommendedMovieIMDb)
-					downloadSmallCover(recommendedMovie)
 					recommendedMovie.RecommendedBy = []string{movie.IMDb}
 					recommendedMovie.RecommendedByTitles = []string{movie.Title}
 					recommendedMovies = append(recommendedMovies, recommendedMovie)
