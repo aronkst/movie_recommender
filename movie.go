@@ -38,17 +38,17 @@ func getMovie(imdb string) movie {
 }
 
 func getMovieFromSite(imdb string) movie {
-	url := urlIMDB(imdb)
+	url := fmt.Sprintf("https://www.imdb.com/title/%s", imdb)
 	document, err := loadSite(url)
 	if err != nil {
 		panic(err)
 	}
 
-	var points int64
+	score := getScoreFromSiteToMovie(document)
+	amountOfVotes := getAmountOfVotesFromSiteToMovie(document)
+	metascore := getMetascoreFromSiteToMovie(document)
 
-	score := getScoreToMovie(document)
-	amountOfVotes := getAmountOfVotesToMovie(document)
-	metascore := getMetascoreToMovie(document)
+	var points int64
 	if metascore <= 0 {
 		points = int64(score * float64(amountOfVotes))
 	} else {
@@ -57,22 +57,22 @@ func getMovieFromSite(imdb string) movie {
 
 	movie := movie{
 		IMDb:                imdb,
-		Title:               getTitleToMovie(document),
-		Year:                getYearToMovie(document),
-		Summary:             getSummaryToMovie(document),
+		Title:               getTitleFromSiteToMovie(document),
+		Year:                getYearFromSiteToMovie(document),
+		Summary:             getSummaryFromSiteToMovie(document),
 		Score:               score,
 		AmountOfVotes:       amountOfVotes,
 		Metascore:           metascore,
 		Points:              points,
-		Genres:              getGenresToMovie(document),
-		Cover:               getCoverToMovie(document),
-		CoverSmall:          getCoverSmallToMovie(document),
-		RecommendedMovies:   getRecommendedMoviesToMovie(document),
+		Genres:              getGenresFromSiteToMovie(document),
+		Cover:               getCoverFromSiteToMovie(document),
+		CoverSmall:          getCoverSmallFromSiteToMovie(document),
+		RecommendedMovies:   getRecommendedMoviesFromSiteToMovie(document),
 		RecommendedBy:       []string{},
 		RecommendedByTitles: []string{},
 	}
 
-	setMovieToJSON(movie)
+	createMovieJSONData(movie)
 	downloadSmallCover(movie)
 
 	return movie
@@ -93,7 +93,7 @@ func getMovieFromJSON(jsonFile string) movie {
 	return movie
 }
 
-func setMovieToJSON(movie movie) {
+func createMovieJSONData(movie movie) {
 	file, err := json.MarshalIndent(movie, "", "  ")
 	if err != nil {
 		panic(err)
@@ -109,38 +109,38 @@ func setMovieToJSON(movie movie) {
 	}
 }
 
-func getTitleToMovie(document *goquery.Document) string {
+func getTitleFromSiteToMovie(document *goquery.Document) string {
 	title := getValueFromSiteDocument(document, "meta[property='og:title']", "content")
 	title = strings.Replace(title, " - IMDb", "", 1)
 	return regexReplace(title, `\s*\(.+\)$`, "")
 }
 
-func getYearToMovie(document *goquery.Document) int64 {
+func getYearFromSiteToMovie(document *goquery.Document) int64 {
 	year := getValueFromSiteDocument(document, "h1 span#titleYear a", "")
 	return stringToInt(year)
 }
 
-func getSummaryToMovie(document *goquery.Document) string {
+func getSummaryFromSiteToMovie(document *goquery.Document) string {
 	return getValueFromSiteDocument(document, "div.summary_text", "")
 }
 
-func getScoreToMovie(document *goquery.Document) float64 {
+func getScoreFromSiteToMovie(document *goquery.Document) float64 {
 	score := getValueFromSiteDocument(document, "div.ratingValue strong span[itemprop='ratingValue']", "")
 	return stringToFloat(score)
 }
 
-func getAmountOfVotesToMovie(document *goquery.Document) int64 {
+func getAmountOfVotesFromSiteToMovie(document *goquery.Document) int64 {
 	amountOfVotes := getValueFromSiteDocument(document, "div.imdbRating a span[itemprop='ratingCount']", "")
 	amountOfVotes = replacePointsAndCommas(amountOfVotes)
 	return stringToInt(amountOfVotes)
 }
 
-func getMetascoreToMovie(document *goquery.Document) int64 {
+func getMetascoreFromSiteToMovie(document *goquery.Document) int64 {
 	metascore := getValueFromSiteDocument(document, "div.metacriticScore.titleReviewBarSubItem span", "")
 	return stringToInt(metascore)
 }
 
-func getGenresToMovie(document *goquery.Document) []string {
+func getGenresFromSiteToMovie(document *goquery.Document) []string {
 	var genres []string
 
 	document.Find("div.see-more.inline.canwrap").Eq(1).Find("a").Each(func(i int, s *goquery.Selection) {
@@ -150,7 +150,7 @@ func getGenresToMovie(document *goquery.Document) []string {
 	return genres
 }
 
-func getCoverToMovie(document *goquery.Document) string {
+func getCoverFromSiteToMovie(document *goquery.Document) string {
 	regex, err := regexp.Compile(`"image": ".*?",`)
 	if err != nil {
 		panic(err)
@@ -166,11 +166,11 @@ func getCoverToMovie(document *goquery.Document) string {
 	return strings.ReplaceAll(value, `",`, "")
 }
 
-func getCoverSmallToMovie(document *goquery.Document) string {
+func getCoverSmallFromSiteToMovie(document *goquery.Document) string {
 	return getValueFromSiteDocument(document, "div.poster a img", "src")
 }
 
-func getRecommendedMoviesToMovie(document *goquery.Document) []string {
+func getRecommendedMoviesFromSiteToMovie(document *goquery.Document) []string {
 	var recommendedMovies []string
 
 	document.Find("div.rec_item").Each(func(i int, s *goquery.Selection) {
