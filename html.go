@@ -18,17 +18,14 @@ func deleteRecommendedMoviesHTMLFileIfExists() {
 	}
 }
 
-func createRecommendedMoviesHTMLFile(watchedMovies []movie, recommendedMovies []movie) {
+func createRecommendedMoviesHTMLFile(recommendedMovies []movie) {
 	deleteRecommendedMoviesHTMLFileIfExists()
 
-	sort.Slice(watchedMovies, func(i, j int) bool {
-		return watchedMovies[i].Points > watchedMovies[j].Points
-	})
 	sort.Slice(recommendedMovies, func(i, j int) bool {
 		return recommendedMovies[i].Points > recommendedMovies[j].Points
 	})
 
-	html := textHTML(watchedMovies, recommendedMovies)
+	html := textHTML(recommendedMovies)
 	bytes := []byte(html)
 	err := ioutil.WriteFile("./Recommended Movies.html", bytes, os.ModePerm)
 	if err != nil {
@@ -36,7 +33,7 @@ func createRecommendedMoviesHTMLFile(watchedMovies []movie, recommendedMovies []
 	}
 }
 
-func textHTML(watchedMovies []movie, recommendedMovies []movie) string {
+func textHTML(recommendedMovies []movie) string {
 	return fmt.Sprintf(`<!DOCTYPE html>
 <html>
 	<head>
@@ -66,14 +63,11 @@ func textHTML(watchedMovies []movie, recommendedMovies []movie) string {
 	</head>
 	<body>
 		<h1>Recommended Movies</h1>
-		<!-- <div id="WatchedMovies">
-%s
-		</div> -->
 		<div id="RecommendedMovies">
 %s
 		</div>
 	</body>
-</html>`, textHTMLMovies(watchedMovies), textHTMLMovies(recommendedMovies))
+</html>`, textHTMLMovies(recommendedMovies))
 }
 
 func textHTMLMovie(movie movie) string {
@@ -152,23 +146,13 @@ func textHTMLMovies(movies []movie) string {
 }
 
 func createRecommendedMovies() {
-	var newWatchedMovies []movie
+	var recommendedMovies []movie
 
 	watchedMovies := readWatchedMovies()
-	watchedMoviesHTML, recommendedMovies := readWatchedAndRecommendedMovies()
 
-	for _, imdb := range watchedMovies {
-		if contains, _ := findMovieByIMDb(watchedMoviesHTML, imdb); contains == false {
-			movie := getMovie(imdb)
-			newWatchedMovies = append(newWatchedMovies, movie)
-		}
-	}
-
-	watchedMoviesHTML = append(watchedMoviesHTML, newWatchedMovies...)
-
-	for _, movie := range newWatchedMovies {
+	for _, movie := range watchedMovies {
 		for _, recommendedMovieIMDb := range movie.RecommendedMovies {
-			if contains, _ := findMovieByIMDb(watchedMoviesHTML, recommendedMovieIMDb); contains == false {
+			if contains, _ := findMovieByIMDb(watchedMovies, recommendedMovieIMDb); contains == false {
 				if contains, index := findMovieByIMDb(recommendedMovies, recommendedMovieIMDb); contains {
 					recommendedMovies[index].Points += movie.Points
 					recommendedMovies[index].RecommendedBy = append(recommendedMovies[index].RecommendedBy, movie.IMDb)
@@ -185,7 +169,7 @@ func createRecommendedMovies() {
 		}
 	}
 
-	createRecommendedMoviesHTMLFile(watchedMoviesHTML, recommendedMovies)
+	createRecommendedMoviesHTMLFile(recommendedMovies)
 }
 
 func findMovieByIMDb(movies []movie, imdb string) (bool, int) {
