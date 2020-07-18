@@ -7,7 +7,6 @@ import (
 	"net/http"
 	"os"
 	"os/exec"
-	"sort"
 	"strings"
 	"time"
 
@@ -17,55 +16,55 @@ import (
 func main() {
 	router := gin.Default()
 	router.SetFuncMap(template.FuncMap{
-		"printGenres":    printGenres,
-		"printIMDbTitle": printIMDbTitle,
+		"htmlGenres":            htmlGenres,
+		"htmlIMDbTitle":         htmlIMDbTitle,
+		"htmlExistPreviousPage": htmlExistPreviousPage,
+		"htmlPreviousPage":      htmlPreviousPage,
+		"htmlExistNextPage":     htmlExistNextPage,
+		"htmlNextPage":          htmlNextPage,
 	})
 	router.LoadHTMLFiles("./templates/list.tmpl")
 	router.StaticFS("./.covers", http.Dir("./.covers"))
 
-	router.GET("/", recommendedMovies)
+	router.GET("/", getRecommendedMovies)
 
 	router.Run()
 }
 
-func recommendedMovies(context *gin.Context) {
-	var recommendedMovies []movie
-
-	watchedMovies := readWatchedMovies()
-
-	for _, movie := range watchedMovies {
-		for _, recommendedMovieIMDb := range movie.RecommendedMovies {
-			if contains, _ := findMovieByIMDb(watchedMovies, recommendedMovieIMDb); contains == false {
-				if contains, index := findMovieByIMDb(recommendedMovies, recommendedMovieIMDb); contains {
-					recommendedMovies[index].Points += movie.Points
-					recommendedMovies[index].RecommendedBy = append(recommendedMovies[index].RecommendedBy, movie.IMDb)
-				} else {
-					recommendedMovie := getMovie(recommendedMovieIMDb)
-					if validMovie(recommendedMovie) {
-						recommendedMovie.RecommendedBy = []string{movie.IMDb}
-						recommendedMovies = append(recommendedMovies, recommendedMovie)
-					}
-				}
-			}
-		}
-	}
-
-	sort.Slice(recommendedMovies, func(i, j int) bool {
-		return recommendedMovies[i].Points > recommendedMovies[j].Points
-	})
+func getRecommendedMovies(context *gin.Context) {
+	pageString := context.DefaultQuery("page", "1")
+	page := stringToInt(pageString)
+	movies, pages := recommendedMovies(page)
 
 	context.HTML(http.StatusOK, "list.tmpl", gin.H{
-		"Movies": recommendedMovies[0:10],
-		"now":    time.Date(2017, 07, 01, 0, 0, 0, 0, time.UTC),
+		"Movies": movies,
+		"Pages":  pages,
+		"Page":   page,
 	})
 }
 
-func printGenres(genres []string) string {
+func htmlGenres(genres []string) string {
 	return strings.Join(genres, ", ")
 }
 
-func printIMDbTitle(imdb string) string {
+func htmlIMDbTitle(imdb string) string {
 	return getMovie(imdb).Title
+}
+
+func htmlExistPreviousPage(page int64) bool {
+	return page >= 2
+}
+
+func htmlPreviousPage(page int64) int64 {
+	return page - 1
+}
+
+func htmlExistNextPage(page int64, pages []int) bool {
+	return int(page) < len(pages)
+}
+
+func htmlNextPage(page int64) int64 {
+	return page + 1
 }
 
 func menu() {

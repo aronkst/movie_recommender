@@ -64,7 +64,7 @@
 					</tr>
 					<tr>
 						<td class="tableTd">Genres:</td>
-						<td id="Genres" class="tableTdValue">{{.Genres | printGenres}}</td>
+						<td id="Genres" class="tableTdValue">{{.Genres | htmlGenres}}</td>
 					</tr>
 					<tr>
 						<td class="tableTd">Recommended by:</td>
@@ -73,12 +73,23 @@
 				</table>
 				<div>
 					{{range .RecommendedBy}}
-					<img src="./.covers/{{.}}.jpg" title="{{. | printIMDbTitle}}" class="imgRecommendedBy" />
+					<img src="./.covers/{{.}}.jpg" title="{{. | htmlIMDbTitle}}" class="imgRecommendedBy" />
 					{{end}}
 				</div>
 				<br />
 			</div>
 			{{end}}
 		</div>
+		<hr />
+		{{if htmlExistPreviousPage .Page}}
+		<a href="/?page={{htmlPreviousPage .Page}}">Previous</a>
+		{{end}}
+		{{if htmlExistNextPage .Page .Pages}}
+		<a href="/?page={{htmlNextPage .Page}}">Next</a>
+		{{end}}
+		<br /><br />
+		{{range .Pages}}
+		<a href="/?page={{.}}">{{.}}</a>
+		{{end}}
 	</body>
 </html>
