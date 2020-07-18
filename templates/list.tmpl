@@ -1,5 +1,84 @@
+<!DOCTYPE html>
 <html>
-	<h1>
-		{{ .title }}
-	</h1>
+	<head>
+		<title>Recommended Movies</title>
+		<style>
+			h2 {
+				margin: 10px 0;
+			}
+			hr {
+				margin-bottom: 30px;
+			}
+			.hide {
+				display: none;
+			}
+			.tableTd {
+				font-weight: bold;
+				padding: 0 10px 10px 0;
+			}
+			.tableTdValue {
+				padding-bottom: 10px;
+			}
+			.imgRecommendedBy {
+				margin: 5px 5px 0 0;
+				width: 70px;
+			}
+		</style> 
+	</head>
+	<body>
+		<h1>Recommended Movies</h1>
+		<div id="RecommendedMovies">
+			{{range .Movies}}
+			<div id="Movie">
+				<hr />
+				<p id="IMDb" class="hide">{{.IMDb}}</p>
+				<p id="Cover" class="hide">{{.Cover}}</p>
+				<p id="CoverSmall" class="hide">{{.CoverSmall}}</p>
+				<p id="Points" class="hide">{{.Points}}</p>
+				<p id="RecommendedMovies" class="hide">{{.RecommendedMovies}}</p>
+				<p id="RecommendedBy" class="hide">{{.RecommendedBy}}</p>
+				<p id="RecommendedByTitles" class="hide">{{.RecommendedByTitles}}</p>
+				<img id="CoverLocal" src="./.covers/{{.IMDb}}.jpg" />
+				<a href="https://www.imdb.com/title/{{.IMDb}}/" target="_blank">Go to IMDb</a>
+				<h2 id="Title">{{.Title}}</h2>
+				<table>
+					<tr>
+						<td class="tableTd">Summary:</td>
+						<td id="Summary" class="tableTdValue">{{.Summary}}</td>
+					</tr>
+					<tr>
+						<td class="tableTd">Year:</td>
+						<td id="Year" class="tableTdValue">{{.Year}}</td>
+					</tr>
+					<tr>
+						<td class="tableTd">IMDb Score:</td>
+						<td id="Score" class="tableTdValue">{{.Score}}</td>
+					</tr>
+					<tr>
+						<td class="tableTd">IMDb Amount of Votes:</td>
+						<td id="AmountOfVotes" class="tableTdValue">{{.AmountOfVotes}}</td>
+					</tr>
+					<tr>
+						<td class="tableTd">Metascore:</td>
+						<td id="Metascore" class="tableTdValue">{{.Metascore}}</td>
+					</tr>
+					<tr>
+						<td class="tableTd">Genres:</td>
+						<td id="Genres" class="tableTdValue">{{.Genres | printGenres}}</td>
+					</tr>
+					<tr>
+						<td class="tableTd">Recommended by:</td>
+						<td></td>
+					</tr>
+				</table>
+				<div>
+					{{range .RecommendedBy}}
+					<img src="./.covers/{{.}}.jpg" title="{{. | printIMDbTitle}}" class="imgRecommendedBy" />
+					{{end}}
+				</div>
+				<br />
+			</div>
+			{{end}}
+		</div>
+	</body>
 </html>

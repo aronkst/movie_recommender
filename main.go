@@ -3,9 +3,12 @@ package main
 import (
 	"bufio"
 	"fmt"
+	"html/template"
 	"net/http"
 	"os"
 	"os/exec"
+	"sort"
+	"strings"
 	"time"
 
 	"github.com/gin-gonic/gin"
@@ -13,7 +16,12 @@ import (
 
 func main() {
 	router := gin.Default()
-	router.LoadHTMLGlob("templates/*")
+	router.SetFuncMap(template.FuncMap{
+		"printGenres":    printGenres,
+		"printIMDbTitle": printIMDbTitle,
+	})
+	router.LoadHTMLFiles("./templates/list.tmpl")
+	router.StaticFS("./.covers", http.Dir("./.covers"))
 
 	router.GET("/", recommendedMovies)
 
@@ -21,9 +29,43 @@ func main() {
 }
 
 func recommendedMovies(context *gin.Context) {
-	context.HTML(http.StatusOK, "list.tmpl", gin.H{
-		"title": "Test",
+	var recommendedMovies []movie
+
+	watchedMovies := readWatchedMovies()
+
+	for _, movie := range watchedMovies {
+		for _, recommendedMovieIMDb := range movie.RecommendedMovies {
+			if contains, _ := findMovieByIMDb(watchedMovies, recommendedMovieIMDb); contains == false {
+				if contains, index := findMovieByIMDb(recommendedMovies, recommendedMovieIMDb); contains {
+					recommendedMovies[index].Points += movie.Points
+					recommendedMovies[index].RecommendedBy = append(recommendedMovies[index].RecommendedBy, movie.IMDb)
+				} else {
+					recommendedMovie := getMovie(recommendedMovieIMDb)
+					if validMovie(recommendedMovie) {
+						recommendedMovie.RecommendedBy = []string{movie.IMDb}
+						recommendedMovies = append(recommendedMovies, recommendedMovie)
+					}
+				}
+			}
+		}
+	}
+
+	sort.Slice(recommendedMovies, func(i, j int) bool {
+		return recommendedMovies[i].Points > recommendedMovies[j].Points
 	})
+
+	context.HTML(http.StatusOK, "list.tmpl", gin.H{
+		"Movies": recommendedMovies[0:10],
+		"now":    time.Date(2017, 07, 01, 0, 0, 0, 0, time.UTC),
+	})
+}
+
+func printGenres(genres []string) string {
+	return strings.Join(genres, ", ")
+}
+
+func printIMDbTitle(imdb string) string {
+	return getMovie(imdb).Title
 }
 
 func menu() {
