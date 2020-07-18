@@ -10,7 +10,8 @@ import (
 type searchMovie struct {
 	Title string
 	Year  int64
-	IMDB  string
+	IMDb  string
+	Image string
 }
 
 func getSearchMovies(search string) []searchMovie {
@@ -27,7 +28,8 @@ func getSearchMovies(search string) []searchMovie {
 		searchMovie := searchMovie{
 			Title: getTitleFromSiteToSearchMovie(s),
 			Year:  getYearFromSiteToSearchMovie(s),
-			IMDB:  getIMDBFromSiteToSearchMovie(s),
+			IMDb:  getIMDBFromSiteToSearchMovie(s),
+			Image: getImageFromSiteToSearchMovie(s),
 		}
 		movies = append(movies, searchMovie)
 	})
@@ -57,4 +59,9 @@ func getIMDBFromSiteToSearchMovie(selection *goquery.Selection) string {
 	imdb = regexReplace(imdb, `(\/\?ref_=fn_ft_tt_)([0-9]*).*?`, "")
 	imdb = strings.ReplaceAll(imdb, "/title/", "")
 	return imdb
+}
+
+func getImageFromSiteToSearchMovie(selection *goquery.Selection) string {
+	title := getValueFromSiteSelection(selection, "td.primary_photo a img", "src")
+	return title
 }

@@ -31,6 +31,8 @@
 			{{range .Movies}}
 			<div id="Movie">
 				<hr />
+				<a href="https://www.imdb.com/title/{{.IMDb}}/" target="_blank">Go to IMDb</a>
+				<br />
 				<p id="IMDb" class="hide">{{.IMDb}}</p>
 				<p id="Cover" class="hide">{{.Cover}}</p>
 				<p id="CoverSmall" class="hide">{{.CoverSmall}}</p>
@@ -39,7 +41,9 @@
 				<p id="RecommendedBy" class="hide">{{.RecommendedBy}}</p>
 				<p id="RecommendedByTitles" class="hide">{{.RecommendedByTitles}}</p>
 				<img id="CoverLocal" src="./.covers/{{.IMDb}}.jpg" />
-				<a href="https://www.imdb.com/title/{{.IMDb}}/" target="_blank">Go to IMDb</a>
+				<br />
+				<a href="/add?imdb={{.IMDb}}" target="_blank">Add</a>
+				<a href="/save?imdb={{.IMDb}}&date=0&like=1" target="_blank">Save Liked</a>
 				<h2 id="Title">{{.Title}}</h2>
 				<table>
 					<tr>

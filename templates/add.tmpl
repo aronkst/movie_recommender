@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Recommended Movies</title>
+		<style>
+			h2 {
+				margin: 10px 0;
+			}
+			hr {
+				margin-bottom: 30px;
+			}
+			.hide {
+				display: none;
+			}
+			.tableTd {
+				font-weight: bold;
+				padding: 0 10px 10px 0;
+			}
+			.tableTdValue {
+				padding-bottom: 10px;
+			}
+			.imgRecommendedBy {
+				margin: 5px 5px 0 0;
+				width: 70px;
+			}
+		</style> 
+	</head>
+	<body>
+    <h1>Add</h1>
+    <hr />
+    <form action="/save" method="GET">
+      <input type="hidden" name="imdb" value="{{.IMDb}}" />
+      <input type="text" name="date" placeholder="Date" />
+      <br />
+      <input type="radio" id="true" name="like" value="1">
+      <label for="true">True</label>
+      <br>
+      <input type="radio" id="false" name="like" value="0">
+      <label for="false">False</label><br>
+      <br />
+      <input type="submit" value="Add" />
+    </form>
+	</body>
+</html>
