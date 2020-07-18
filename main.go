@@ -3,12 +3,30 @@ package main
 import (
 	"bufio"
 	"fmt"
+	"net/http"
 	"os"
 	"os/exec"
 	"time"
+
+	"github.com/gin-gonic/gin"
 )
 
 func main() {
+	router := gin.Default()
+	router.LoadHTMLGlob("templates/*")
+
+	router.GET("/", recommendedMovies)
+
+	router.Run()
+}
+
+func recommendedMovies(context *gin.Context) {
+	context.HTML(http.StatusOK, "list.tmpl", gin.H{
+		"title": "Test",
+	})
+}
+
+func menu() {
 	clearScreen()
 
 	fmt.Println("Movie Recommender.")
