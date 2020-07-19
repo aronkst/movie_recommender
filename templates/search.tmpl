@@ -8,8 +8,10 @@
 		<a href="/search">Search for a movie to add</a>
 		<h1>Search for a movie to add</h1>
 		<hr />
-    <form action="/search" method="GET">
-			<input type="text" name="search" placeholder="Movie name" />
+		<form action="/search" method="GET">
+			<label for="search">Title:</label>
+			<br />
+			<input type="text" name="search" id="search" value="{{.Search}}" />
 			<br /><br />
       <input type="submit" value="Search" />
 		</form>
