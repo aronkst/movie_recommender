@@ -5,7 +5,6 @@
 *.so
 *.dylib
 movie_recommender
-Recommended Movies.html
 *.jpg
 .data/*.json
 
