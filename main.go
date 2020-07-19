@@ -63,6 +63,7 @@ func getSearch(context *gin.Context) {
 
 func getAdd(context *gin.Context) {
 	imdb := context.DefaultQuery("imdb", "")
+
 	if imdb == "" {
 		context.Redirect(http.StatusMovedPermanently, "/search")
 	} else {
@@ -76,15 +77,14 @@ func getSave(context *gin.Context) {
 	imdb := context.DefaultQuery("imdb", "")
 	date := context.DefaultQuery("date", "")
 	like := context.DefaultQuery("like", "")
+
 	if imdb == "" || like == "" {
 		context.Redirect(http.StatusMovedPermanently, "/search")
 	} else {
 		if date == "" {
 			dateTime := time.Now()
 			date = dateTime.Format("20060102")
-		}
-
-		if date == "0" {
+		} else if date == "0" {
 			date = "00000000"
 		}
 
@@ -93,15 +93,6 @@ func getSave(context *gin.Context) {
 		context.HTML(http.StatusOK, "save.tmpl", gin.H{
 			"IMDb": imdb,
 		})
-	}
-}
-
-func addNewMovie(imdb string, date string, like int64) {
-	movie := getMovie(imdb)
-	go downloadCover(movie, date, like)
-
-	for _, recommendedMovie := range movie.RecommendedMovies {
-		go getMovie(recommendedMovie)
 	}
 }
 

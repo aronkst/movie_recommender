@@ -179,23 +179,3 @@ func getRecommendedMoviesFromSiteToMovie(document *goquery.Document) []string {
 
 	return recommendedMovies
 }
-
-func replacePointsAndCommas(value string) string {
-	value = strings.Replace(value, ".", "", -1)
-	return strings.Replace(value, ",", "", -1)
-}
-
-func findMovieByIMDb(movies []movie, imdb string) (bool, int) {
-	for index, movie := range movies {
-		if movie.IMDb == imdb {
-			return true, index
-		}
-	}
-	return false, -1
-}
-
-func validMovie(movie movie) bool {
-	return movie.Cover != "" && movie.CoverSmall != "" && movie.Score > 0 &&
-		movie.Year > 0 && movie.AmountOfVotes > 0 && len(movie.Genres) > 0 &&
-		movie.Summary != "" && movie.Summary != `Add a Plot »`
-}

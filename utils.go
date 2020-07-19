@@ -48,3 +48,8 @@ func createFolderIfNotExists(folder string) {
 		os.Mkdir(folder, os.ModePerm)
 	}
 }
+
+func replacePointsAndCommas(value string) string {
+	value = strings.Replace(value, ".", "", -1)
+	return strings.Replace(value, ",", "", -1)
+}
