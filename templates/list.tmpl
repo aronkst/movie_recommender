@@ -21,6 +21,35 @@
 		<a href="/search">Search for a movie to add</a>
 		<h1>Recommended Movies</h1>
 		<hr />
+		<h3>Filter</h3>
+		<form action="/" method="GET">
+			<label for="title">Title:</label>
+			<br />
+      <input type="text" name="title" id="title" value="{{.Title}}" />
+			<br /><br />
+			<label for="summary">Summary:</label>
+			<br />
+			<input type="text" name="summary" id="summary" value="{{.Summary}}" />
+			<br /><br />
+			<label for="year">Year:</label>
+			<br />
+			<input type="text" name="year" id="year" value="{{.Year}}" />
+			<br /><br />
+			<label for="imdb">Imdb:</label>
+			<br />
+			<input type="text" name="imdb" id="imdb" value="{{.IMDb}}" />
+			<br /><br />
+			<label for="genre">Genre:</label>
+			<br />
+			<input type="text" name="genre" id="genre" value="{{.Genre}}" />
+			<br /><br />
+			<label for="score">Score:</label>
+			<br />
+			<input type="text" name="score" id="score" value="{{.Score}}" />
+			<br /><br />
+      <input type="submit" value="Search" />
+    </form>
+		<hr />
 		<div>
 			{{range .Movies}}
 			<div>
@@ -70,14 +99,14 @@
 			{{end}}
 		</div>
 		{{if htmlExistPreviousPage .Page}}
-		<a href="/?page={{htmlPreviousPage .Page}}">Previous</a>
+		<a href="/?page={{htmlPreviousPage .Page}}&title={{.Title}}&summary={{.Summary}}&year={{.Year}}&imdb={{.IMDb}}&genre={{.Genre}}&score={{.Score}}">Previous</a>
 		{{end}}
 		{{if htmlExistNextPage .Page .Pages}}
-		<a href="/?page={{htmlNextPage .Page}}">Next</a>
+		<a href="/?page={{htmlNextPage .Page}}&title={{.Title}}&summary={{.Summary}}&year={{.Year}}&imdb={{.IMDb}}&genre={{.Genre}}&score={{.Score}}">Next</a>
 		{{end}}
 		<br />
 		{{range .Pages}}
-		<a href="/?page={{.}}">{{.}}</a>
+		<a href="/?page={{.}}&title={{$.Title}}&summary={{$.Summary}}&year={{$.Year}}&imdb={{$.IMDb}}&genre={{$.Genre}}&score={{$.Score}}">{{.}}</a>
 		{{end}}
 	</body>
 </html>

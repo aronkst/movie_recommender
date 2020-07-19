@@ -33,7 +33,6 @@ func readWatchedMovies() []movie {
 	}
 
 	movies = uniqueMovies(movies)
-	movies = sortMovies(movies)
 	return movies
 }
 
@@ -60,13 +59,16 @@ func createRecommendedMovies() []movie {
 		}
 	}
 
-	recommendedMovies = sortMovies(recommendedMovies)
 	return recommendedMovies
 }
 
-func recommendedMovies(page int64) ([]movie, []int) {
+func recommendedMovies(page int64, title string, summary string, year int64, imdb string, genre string, score float64) ([]movie, []int) {
 	recommendedMovies := createRecommendedMovies()
-	return moviesPagination(recommendedMovies, page), moviesPages(recommendedMovies)
+	recommendedMovies = moviesSearch(recommendedMovies, title, summary, year, imdb, genre, score)
+	recommendedMovies = sortMovies(recommendedMovies)
+	pages := moviesPages(recommendedMovies)
+	recommendedMovies = moviesPagination(recommendedMovies, page)
+	return recommendedMovies, pages
 }
 
 func watchedMovies(page int64) ([]movie, []int) {
@@ -157,4 +159,61 @@ func addNewMovie(imdb string, date string, like int64) {
 	for _, recommendedMovie := range movie.RecommendedMovies {
 		go getMovie(recommendedMovie)
 	}
+}
+
+func moviesSearch(movies []movie, title string, summary string, year int64, imdb string, genre string, score float64) []movie {
+	var searchedMovies []movie
+
+	if title != "" || summary != "" || year > 0 || imdb != "" || genre != "" || score > 0 {
+		for _, movie := range movies {
+			if title != "" {
+				lowerMovieTitle := strings.ToLower(movie.Title)
+				lowerTitle := strings.ToLower(title)
+				if strings.Contains(lowerMovieTitle, lowerTitle) == false {
+					continue
+				}
+			}
+
+			if summary != "" {
+				lowerMovieSummary := strings.ToLower(movie.Summary)
+				lowerSummary := strings.ToLower(summary)
+				if strings.Contains(lowerMovieSummary, lowerSummary) == false {
+					continue
+				}
+			}
+
+			if year > 0 && movie.Year < year {
+				continue
+			}
+
+			if imdb != "" && movie.IMDb != imdb {
+				continue
+			}
+
+			if genre != "" && movieEqualGenre(genre, movie.Genres) == false {
+				continue
+			}
+
+			if score > 0 && movie.Score < score {
+				continue
+			}
+
+			searchedMovies = append(searchedMovies, movie)
+		}
+
+		return searchedMovies
+	}
+
+	return movies
+}
+
+func movieEqualGenre(genre string, genres []string) bool {
+	genre = strings.ToLower(genre)
+	for _, g := range genres {
+		movieGenre := strings.ToLower(g)
+		if movieGenre == genre {
+			return true
+		}
+	}
+	return false
 }

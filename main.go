@@ -38,12 +38,19 @@ func main() {
 func getRecommendedMovies(context *gin.Context) {
 	pageString := context.DefaultQuery("page", "1")
 	page := stringToInt(pageString)
-	movies, pages := recommendedMovies(page)
+	title, summary, year, imdb, genre, score := searchParams(context)
+	movies, pages := recommendedMovies(page, title, summary, year, imdb, genre, score)
 
 	context.HTML(http.StatusOK, "list.tmpl", gin.H{
-		"Movies": movies,
-		"Pages":  pages,
-		"Page":   page,
+		"Movies":  movies,
+		"Pages":   pages,
+		"Page":    page,
+		"Title":   title,
+		"Summary": summary,
+		"Year":    year,
+		"IMDb":    imdb,
+		"Genre":   genre,
+		"Score":   score,
 	})
 }
 
@@ -94,6 +101,19 @@ func getSave(context *gin.Context) {
 			"IMDb": imdb,
 		})
 	}
+}
+
+func searchParams(context *gin.Context) (string, string, int64, string, string, float64) {
+	title := context.DefaultQuery("title", "")
+	summary := context.DefaultQuery("summary", "")
+	yearString := context.DefaultQuery("year", "0")
+	year := stringToInt(yearString)
+	imdb := context.DefaultQuery("imdb", "")
+	genre := context.DefaultQuery("genre", "")
+	scoreString := context.DefaultQuery("score", "0")
+	score := stringToFloat(scoreString)
+
+	return title, summary, year, imdb, genre, score
 }
 
 func htmlGenres(genres []string) string {
