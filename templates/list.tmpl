@@ -3,15 +3,6 @@
 	<head>
 		<title>Recommended Movies</title>
 		<style>
-			h2 {
-				margin: 10px 0;
-			}
-			hr {
-				margin-bottom: 30px;
-			}
-			.hide {
-				display: none;
-			}
 			.tableTd {
 				font-weight: bold;
 				padding: 0 10px 10px 0;
@@ -20,30 +11,24 @@
 				padding-bottom: 10px;
 			}
 			.imgRecommendedBy {
-				margin: 5px 5px 0 0;
+				margin-right: 5px;
 				width: 70px;
 			}
 		</style> 
 	</head>
 	<body>
+		<a href="/">Recommended Movies</a>
+		<a href="/search">Search for a movie to add</a>
 		<h1>Recommended Movies</h1>
-		<div id="RecommendedMovies">
+		<hr />
+		<div>
 			{{range .Movies}}
-			<div id="Movie">
-				<hr />
-				<a href="https://www.imdb.com/title/{{.IMDb}}/" target="_blank">Go to IMDb</a>
-				<br />
-				<p id="IMDb" class="hide">{{.IMDb}}</p>
-				<p id="Cover" class="hide">{{.Cover}}</p>
-				<p id="CoverSmall" class="hide">{{.CoverSmall}}</p>
-				<p id="Points" class="hide">{{.Points}}</p>
-				<p id="RecommendedMovies" class="hide">{{.RecommendedMovies}}</p>
-				<p id="RecommendedBy" class="hide">{{.RecommendedBy}}</p>
-				<p id="RecommendedByTitles" class="hide">{{.RecommendedByTitles}}</p>
+			<div>
 				<img id="CoverLocal" src="./.covers/{{.IMDb}}.jpg" />
 				<br />
+				<a href="https://www.imdb.com/title/{{.IMDb}}/" target="_blank">Go to IMDb</a>
 				<a href="/add?imdb={{.IMDb}}" target="_blank">Add</a>
-				<a href="/save?imdb={{.IMDb}}&date=0&like=1" target="_blank">Save Liked</a>
+				<a href="/save?imdb={{.IMDb}}&date=0&like=1" target="_blank">Save as liked</a>
 				<h2 id="Title">{{.Title}}</h2>
 				<table>
 					<tr>
@@ -80,18 +65,17 @@
 					<img src="./.covers/{{.}}.jpg" title="{{. | htmlIMDbTitle}}" class="imgRecommendedBy" />
 					{{end}}
 				</div>
-				<br />
+				<hr />
 			</div>
 			{{end}}
 		</div>
-		<hr />
 		{{if htmlExistPreviousPage .Page}}
 		<a href="/?page={{htmlPreviousPage .Page}}">Previous</a>
 		{{end}}
 		{{if htmlExistNextPage .Page .Pages}}
 		<a href="/?page={{htmlNextPage .Page}}">Next</a>
 		{{end}}
-		<br /><br />
+		<br />
 		{{range .Pages}}
 		<a href="/?page={{.}}">{{.}}</a>
 		{{end}}

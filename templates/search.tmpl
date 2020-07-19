@@ -1,44 +1,26 @@
 <!DOCTYPE html>
 <html>
 	<head>
-		<title>Recommended Movies</title>
-		<style>
-			h2 {
-				margin: 10px 0;
-			}
-			hr {
-				margin-bottom: 30px;
-			}
-			.hide {
-				display: none;
-			}
-			.tableTd {
-				font-weight: bold;
-				padding: 0 10px 10px 0;
-			}
-			.tableTdValue {
-				padding-bottom: 10px;
-			}
-			.imgRecommendedBy {
-				margin: 5px 5px 0 0;
-				width: 70px;
-			}
-		</style> 
+		<title>Search for a movie to add</title>
 	</head>
 	<body>
-    <h1>Search</h1>
-    <hr />
+		<a href="/">Recommended Movies</a>
+		<a href="/search">Search for a movie to add</a>
+		<h1>Search for a movie to add</h1>
+		<hr />
     <form action="/search" method="GET">
-      <input type="text" name="search" />
+			<input type="text" name="search" placeholder="Movie name" />
+			<br /><br />
       <input type="submit" value="Search" />
-    </form>
-    <hr />
+		</form>
+		{{if .Movies}}
+		<hr />
     <h2>{{.Search}}</h2>
-    <hr />
     {{range .Movies}}
     <img src="{{.Image}}" alt="{{.Title}}">
     <a href="/add?imdb={{.IMDb}}">{{.Title}} ({{.Year}})</a>
     <br />
     {{end}}
+		{{end}}
 	</body>
 </html>
