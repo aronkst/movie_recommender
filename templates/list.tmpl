@@ -1,112 +1,118 @@
 <!DOCTYPE html>
 <html>
-	<head>
-		<title>Recommended Movies</title>
-		<style>
-			.tableTd {
-				font-weight: bold;
-				padding: 0 10px 10px 0;
-			}
-			.tableTdValue {
-				padding-bottom: 10px;
-			}
-			.imgRecommendedBy {
-				margin-right: 5px;
-				width: 70px;
-			}
-		</style> 
-	</head>
-	<body>
-		<a href="/">Recommended Movies</a>
-		<a href="/search">Search for a movie to add</a>
-		<h1>Recommended Movies</h1>
-		<hr />
-		<h3>Filter</h3>
-		<form action="/" method="GET">
-			<label for="title">Title:</label>
-			<br />
+  <head>
+    <title>Recommended Movies</title>
+    <style>
+      .tableTd {
+        font-weight: bold;
+        padding: 0 10px 10px 0;
+      }
+      .tableTdValue {
+        padding-bottom: 10px;
+      }
+      .imgRecommendedBy {
+        margin-right: 5px;
+        width: 70px;
+      }
+    </style> 
+  </head>
+  <body>
+    <a href="/">Recommended Movies</a>
+    <a href="/search">Search for a movie to add</a>
+    <h1>Recommended Movies</h1>
+    <hr />
+    <h3>Filter</h3>
+    <form action="/" method="GET">
+      <label for="title">Title:</label>
+      <br />
       <input type="text" name="title" id="title" value="{{.Title}}" />
-			<br /><br />
-			<label for="summary">Summary:</label>
-			<br />
-			<input type="text" name="summary" id="summary" value="{{.Summary}}" />
-			<br /><br />
-			<label for="year">Year:</label>
-			<br />
-			<input type="text" name="year" id="year" value="{{.Year}}" />
-			<br /><br />
-			<label for="imdb">Imdb:</label>
-			<br />
-			<input type="text" name="imdb" id="imdb" value="{{.IMDb}}" />
-			<br /><br />
-			<label for="genre">Genre:</label>
-			<br />
-			<input type="text" name="genre" id="genre" value="{{.Genre}}" />
-			<br /><br />
-			<label for="score">Score:</label>
-			<br />
-			<input type="text" name="score" id="score" value="{{.Score}}" />
-			<br /><br />
+      <br />
+      <br />
+      <label for="summary">Summary:</label>
+      <br />
+      <input type="text" name="summary" id="summary" value="{{.Summary}}" />
+      <br />
+      <br />
+      <label for="year">Year:</label>
+      <br />
+      <input type="text" name="year" id="year" value="{{.Year}}" />
+      <br />
+      <br />
+      <label for="imdb">Imdb:</label>
+      <br />
+      <input type="text" name="imdb" id="imdb" value="{{.IMDb}}" />
+      <br />
+      <br />
+      <label for="genre">Genre:</label>
+      <br />
+      <input type="text" name="genre" id="genre" value="{{.Genre}}" />
+      <br />
+      <br />
+      <label for="score">Score:</label>
+      <br />
+      <input type="text" name="score" id="score" value="{{.Score}}" />
+      <br />
+      <br />
       <input type="submit" value="Search" />
     </form>
-		<hr />
-		<div>
-			{{range .Movies}}
-			<div>
-				<img id="CoverLocal" src="./.covers/{{.IMDb}}.jpg" />
-				<br />
-				<a href="https://www.imdb.com/title/{{.IMDb}}/" target="_blank">Go to IMDb</a>
-				<a href="/add?imdb={{.IMDb}}" target="_blank">Add</a>
-				<a href="/save?imdb={{.IMDb}}&date=0&like=1" target="_blank">Save as liked</a>
-				<h2 id="Title">{{.Title}}</h2>
-				<table>
-					<tr>
-						<td class="tableTd">Summary:</td>
-						<td id="Summary" class="tableTdValue">{{.Summary}}</td>
-					</tr>
-					<tr>
-						<td class="tableTd">Year:</td>
-						<td id="Year" class="tableTdValue">{{.Year}}</td>
-					</tr>
-					<tr>
-						<td class="tableTd">IMDb Score:</td>
-						<td id="Score" class="tableTdValue">{{.Score}}</td>
-					</tr>
-					<tr>
-						<td class="tableTd">IMDb Amount of Votes:</td>
-						<td id="AmountOfVotes" class="tableTdValue">{{.AmountOfVotes}}</td>
-					</tr>
-					<tr>
-						<td class="tableTd">Metascore:</td>
-						<td id="Metascore" class="tableTdValue">{{.Metascore}}</td>
-					</tr>
-					<tr>
-						<td class="tableTd">Genres:</td>
-						<td id="Genres" class="tableTdValue">{{.Genres | htmlGenres}}</td>
-					</tr>
-					<tr>
-						<td class="tableTd">Recommended by:</td>
-						<td></td>
-					</tr>
-				</table>
-				<div>
-					{{range .RecommendedBy}}
-					<img src="./.covers/{{.}}.jpg" title="{{. | htmlIMDbTitle}}" class="imgRecommendedBy" />
-					{{end}}
-				</div>
-				<hr />
-			</div>
-			{{end}}
-		</div>
-		{{if htmlExistPreviousPage .Page}}
-		<a href="/?page={{htmlPreviousPage .Page}}&title={{.Title}}&summary={{.Summary}}&year={{.Year}}&imdb={{.IMDb}}&genre={{.Genre}}&score={{.Score}}">Previous</a>
-		{{end}}
-		{{if htmlExistNextPage .Page .Pages}}
-		<a href="/?page={{htmlNextPage .Page}}&title={{.Title}}&summary={{.Summary}}&year={{.Year}}&imdb={{.IMDb}}&genre={{.Genre}}&score={{.Score}}">Next</a>
-		{{end}}
-		<br />
-		{{range .Pages}}
-		<a href="/?page={{.}}&title={{$.Title}}&summary={{$.Summary}}&year={{$.Year}}&imdb={{$.IMDb}}&genre={{$.Genre}}&score={{$.Score}}">{{.}}</a>
-		{{end}}
-	</body>
+    <hr />
+    <div>
+      {{range .Movies}}
+      <div>
+        <img id="CoverLocal" src="./.covers/{{.IMDb}}.jpg" />
+        <br />
+        <a href="https://www.imdb.com/title/{{.IMDb}}/" target="_blank">Go to IMDb</a>
+        <a href="/add?imdb={{.IMDb}}" target="_blank">Add</a>
+        <a href="/save?imdb={{.IMDb}}&date=0&like=1" target="_blank">Save as liked</a>
+        <h2 id="Title">{{.Title}}</h2>
+        <table>
+          <tr>
+            <td class="tableTd">Summary:</td>
+            <td id="Summary" class="tableTdValue">{{.Summary}}</td>
+          </tr>
+          <tr>
+            <td class="tableTd">Year:</td>
+            <td id="Year" class="tableTdValue">{{.Year}}</td>
+          </tr>
+          <tr>
+            <td class="tableTd">IMDb Score:</td>
+            <td id="Score" class="tableTdValue">{{.Score}}</td>
+          </tr>
+          <tr>
+            <td class="tableTd">IMDb Amount of Votes:</td>
+            <td id="AmountOfVotes" class="tableTdValue">{{.AmountOfVotes}}</td>
+          </tr>
+          <tr>
+            <td class="tableTd">Metascore:</td>
+            <td id="Metascore" class="tableTdValue">{{.Metascore}}</td>
+          </tr>
+          <tr>
+            <td class="tableTd">Genres:</td>
+            <td id="Genres" class="tableTdValue">{{.Genres | htmlGenres}}</td>
+          </tr>
+          <tr>
+            <td class="tableTd">Recommended by:</td>
+            <td></td>
+          </tr>
+        </table>
+        <div>
+          {{range .RecommendedBy}}
+          <img src="./.covers/{{.}}.jpg" title="{{. | htmlIMDbTitle}}" class="imgRecommendedBy" />
+          {{end}}
+        </div>
+        <hr />
+      </div>
+      {{end}}
+    </div>
+    {{if htmlExistPreviousPage .Page}}
+    <a href="/?page={{htmlPreviousPage .Page}}&title={{.Title}}&summary={{.Summary}}&year={{.Year}}&imdb={{.IMDb}}&genre={{.Genre}}&score={{.Score}}">Previous</a>
+    {{end}}
+    {{if htmlExistNextPage .Page .Pages}}
+    <a href="/?page={{htmlNextPage .Page}}&title={{.Title}}&summary={{.Summary}}&year={{.Year}}&imdb={{.IMDb}}&genre={{.Genre}}&score={{.Score}}">Next</a>
+    {{end}}
+    <br />
+    {{range .Pages}}
+    <a href="/?page={{.}}&title={{$.Title}}&summary={{$.Summary}}&year={{$.Year}}&imdb={{$.IMDb}}&genre={{$.Genre}}&score={{$.Score}}">{{.}}</a>
+    {{end}}
+  </body>
 </html>

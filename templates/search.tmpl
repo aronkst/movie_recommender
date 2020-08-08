@@ -1,28 +1,29 @@
 <!DOCTYPE html>
 <html>
-	<head>
-		<title>Search for a movie to add</title>
-	</head>
-	<body>
-		<a href="/">Recommended Movies</a>
-		<a href="/search">Search for a movie to add</a>
-		<h1>Search for a movie to add</h1>
-		<hr />
-		<form action="/search" method="GET">
-			<label for="search">Title:</label>
-			<br />
-			<input type="text" name="search" id="search" value="{{.Search}}" />
-			<br /><br />
+  <head>
+    <title>Search for a movie to add</title>
+  </head>
+  <body>
+    <a href="/">Recommended Movies</a>
+    <a href="/search">Search for a movie to add</a>
+    <h1>Search for a movie to add</h1>
+    <hr />
+    <form action="/search" method="GET">
+      <label for="search">Title:</label>
+      <br />
+      <input type="text" name="search" id="search" value="{{.Search}}" />
+      <br />
+      <br />
       <input type="submit" value="Search" />
-		</form>
-		{{if .Movies}}
-		<hr />
+    </form>
+    {{if .Movies}}
+    <hr />
     <h2>{{.Search}}</h2>
     {{range .Movies}}
     <img src="{{.Image}}" alt="{{.Title}}">
     <a href="/add?imdb={{.IMDb}}">{{.Title}} ({{.Year}})</a>
     <br />
     {{end}}
-		{{end}}
-	</body>
+    {{end}}
+  </body>
 </html>
