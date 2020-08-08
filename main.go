@@ -18,6 +18,8 @@ func main() {
 		"htmlPreviousPage":      htmlPreviousPage,
 		"htmlExistNextPage":     htmlExistNextPage,
 		"htmlNextPage":          htmlNextPage,
+		"htmlMetascore":         htmlMetascore,
+		"htmlOrder":             htmlOrder,
 	})
 	router.LoadHTMLFiles(
 		"./templates/list.tmpl",
@@ -38,19 +40,21 @@ func main() {
 func getRecommendedMovies(context *gin.Context) {
 	pageString := context.DefaultQuery("page", "1")
 	page := stringToInt(pageString)
-	title, summary, year, imdb, genre, score := searchParams(context)
-	movies, pages := recommendedMovies(page, title, summary, year, imdb, genre, score)
+	title, summary, year, imdb, genre, score, metascore, order := searchParams(context)
+	movies, pages := recommendedMovies(page, title, summary, year, imdb, genre, score, metascore, order)
 
 	context.HTML(http.StatusOK, "list.tmpl", gin.H{
-		"Movies":  movies,
-		"Pages":   pages,
-		"Page":    page,
-		"Title":   title,
-		"Summary": summary,
-		"Year":    year,
-		"IMDb":    imdb,
-		"Genre":   genre,
-		"Score":   score,
+		"Movies":    movies,
+		"Pages":     pages,
+		"Page":      page,
+		"Title":     title,
+		"Summary":   summary,
+		"Year":      year,
+		"IMDb":      imdb,
+		"Genre":     genre,
+		"Score":     score,
+		"Metascore": metascore,
+		"Order":     order,
 	})
 }
 
@@ -103,7 +107,7 @@ func getSave(context *gin.Context) {
 	}
 }
 
-func searchParams(context *gin.Context) (string, string, int64, string, string, float64) {
+func searchParams(context *gin.Context) (string, string, int64, string, string, float64, int64, string) {
 	title := context.DefaultQuery("title", "")
 	summary := context.DefaultQuery("summary", "")
 	yearString := context.DefaultQuery("year", "0")
@@ -112,8 +116,11 @@ func searchParams(context *gin.Context) (string, string, int64, string, string, 
 	genre := context.DefaultQuery("genre", "")
 	scoreString := context.DefaultQuery("score", "0")
 	score := stringToFloat(scoreString)
+	metascoreString := context.DefaultQuery("metascore", "0")
+	metascore := stringToInt(metascoreString)
+	order := context.DefaultQuery("order", "points")
 
-	return title, summary, year, imdb, genre, score
+	return title, summary, year, imdb, genre, score, metascore, order
 }
 
 func htmlGenres(genres []string) string {
@@ -138,4 +145,18 @@ func htmlExistNextPage(page int64, pages []int) bool {
 
 func htmlNextPage(page int64) int64 {
 	return page + 1
+}
+
+func htmlOrder(order string, field string) string {
+	if order == field {
+		return "selected"
+	}
+	return ""
+}
+
+func htmlMetascore(metascore int64, value int64) string {
+	if metascore == value {
+		return "checked"
+	}
+	return ""
 }

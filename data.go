@@ -62,10 +62,10 @@ func createRecommendedMovies() []movie {
 	return recommendedMovies
 }
 
-func recommendedMovies(page int64, title string, summary string, year int64, imdb string, genre string, score float64) ([]movie, []int) {
+func recommendedMovies(page int64, title string, summary string, year int64, imdb string, genre string, score float64, metascore int64, order string) ([]movie, []int) {
 	recommendedMovies := createRecommendedMovies()
-	recommendedMovies = moviesSearch(recommendedMovies, title, summary, year, imdb, genre, score)
-	recommendedMovies = sortMovies(recommendedMovies)
+	recommendedMovies = moviesSearch(recommendedMovies, title, summary, year, imdb, genre, score, metascore)
+	recommendedMovies = sortMovies(recommendedMovies, order)
 	pages := moviesPages(recommendedMovies)
 	recommendedMovies = moviesPagination(recommendedMovies, page)
 	return recommendedMovies, pages
@@ -129,10 +129,21 @@ func moviesPages(data []movie) []int {
 	return pages
 }
 
-func sortMovies(data []movie) []movie {
-	sort.Slice(data, func(i, j int) bool {
-		return data[i].Points > data[j].Points
-	})
+func sortMovies(data []movie, order string) []movie {
+	switch order {
+	case "score":
+		sort.Slice(data, func(i, j int) bool {
+			return data[i].Score > data[j].Score
+		})
+	case "metascore":
+		sort.Slice(data, func(i, j int) bool {
+			return data[i].Metascore > data[j].Metascore
+		})
+	default:
+		sort.Slice(data, func(i, j int) bool {
+			return data[i].Points > data[j].Points
+		})
+	}
 
 	return data
 }
@@ -161,10 +172,10 @@ func addNewMovie(imdb string, date string, like int64) {
 	}
 }
 
-func moviesSearch(movies []movie, title string, summary string, year int64, imdb string, genre string, score float64) []movie {
+func moviesSearch(movies []movie, title string, summary string, year int64, imdb string, genre string, score float64, metascore int64) []movie {
 	var searchedMovies []movie
 
-	if title != "" || summary != "" || year > 0 || imdb != "" || genre != "" || score > 0 {
+	if title != "" || summary != "" || year > 0 || imdb != "" || genre != "" || score > 0 || metascore > 0 {
 		for _, movie := range movies {
 			if title != "" {
 				lowerMovieTitle := strings.ToLower(movie.Title)
@@ -195,6 +206,10 @@ func moviesSearch(movies []movie, title string, summary string, year int64, imdb
 			}
 
 			if score > 0 && movie.Score < score {
+				continue
+			}
+
+			if metascore == 1 && movie.Metascore <= 0 {
 				continue
 			}
 
