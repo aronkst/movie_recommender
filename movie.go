@@ -1,43 +1,36 @@
 package main
 
 import (
-	"encoding/json"
+	"errors"
 	"fmt"
-	"io/ioutil"
-	"os"
 	"regexp"
 	"strings"
 
 	"github.com/PuerkitoBio/goquery"
 )
 
-type movie struct {
-	IMDb                string   `json:"imdb"`
-	Title               string   `json:"title"`
-	Year                int64    `json:"year"`
-	Summary             string   `json:"summary"`
-	Score               float64  `json:"score"`
-	AmountOfVotes       int64    `json:"amount_of_votes"`
-	Metascore           int64    `json:"metascore"`
-	Points              int64    `json:"points"`
-	Genres              []string `json:"genres"`
-	Cover               string   `json:"cover"`
-	CoverSmall          string   `json:"cover_small"`
-	RecommendedMovies   []string `json:"recommended_movies"`
-	RecommendedBy       []string `json:"recommended_by"`
-	RecommendedByTitles []string `json:"recommended_by_titles"`
-}
+func getMovie(imdb string) (movie, error) {
+	var invalidMovie invalidMovie
+	whereInvalidMovie := database.Where("imdb = ?", imdb).First(&invalidMovie)
 
-func getMovie(imdb string) movie {
-	jsonFile := fmt.Sprintf("./.data/%s.json", imdb)
-	if fileExists(jsonFile) {
-		return getMovieFromJSON(jsonFile)
+	if whereInvalidMovie.RowsAffected >= 1 {
+		return movie{}, errors.New("invalid movie")
 	}
 
-	return getMovieFromSite(imdb)
+	var movie movie
+	whereMovie := database.Where("imdb = ?", imdb).First(&movie)
+
+	if whereMovie.RowsAffected <= 0 {
+		return getMovieFromSite(imdb)
+	}
+
+	return movie, nil
 }
 
-func getMovieFromSite(imdb string) movie {
+func getMovieFromSite(imdb string) (movie, error) {
+	fmt.Println("ERROROROROROROR")
+	fmt.Println(imdb)
+
 	url := fmt.Sprintf("https://www.imdb.com/title/%s", imdb)
 	document, err := loadSite(url)
 	if err != nil {
@@ -47,6 +40,7 @@ func getMovieFromSite(imdb string) movie {
 	score := getScoreFromSiteToMovie(document)
 	amountOfVotes := getAmountOfVotesFromSiteToMovie(document)
 	metascore := getMetascoreFromSiteToMovie(document)
+	urlCoverSmall := getCoverSmallFromSiteToMovie(document)
 
 	var points int64
 	if metascore <= 0 {
@@ -56,57 +50,34 @@ func getMovieFromSite(imdb string) movie {
 	}
 
 	movie := movie{
-		IMDb:                imdb,
-		Title:               getTitleFromSiteToMovie(document),
-		Year:                getYearFromSiteToMovie(document),
-		Summary:             getSummaryFromSiteToMovie(document),
-		Score:               score,
-		AmountOfVotes:       amountOfVotes,
-		Metascore:           metascore,
-		Points:              points,
-		Genres:              getGenresFromSiteToMovie(document),
-		Cover:               getCoverFromSiteToMovie(document),
-		CoverSmall:          getCoverSmallFromSiteToMovie(document),
-		RecommendedMovies:   getRecommendedMoviesFromSiteToMovie(document),
-		RecommendedBy:       []string{},
-		RecommendedByTitles: []string{},
+		IMDb:              imdb,
+		Title:             getTitleFromSiteToMovie(document),
+		Year:              getYearFromSiteToMovie(document),
+		Summary:           getSummaryFromSiteToMovie(document),
+		Score:             score,
+		AmountOfVotes:     amountOfVotes,
+		Metascore:         metascore,
+		Points:            points,
+		Genres:            getGenresFromSiteToMovie(document),
+		RecommendedMovies: getRecommendedMoviesFromSiteToMovie(document),
+		URLCover:          getCoverFromSiteToMovie(document),
+		URLCoverSmall:     urlCoverSmall,
+		Cover:             "",
 	}
 
-	createMovieJSONFile(movie)
-	downloadSmallCover(movie)
+	if validMovie(movie) {
+		movie.Cover = getImageFromSiteToBase64(urlCoverSmall)
+		database.Create(&movie)
 
-	return movie
-}
-
-func getMovieFromJSON(jsonFile string) movie {
-	var movie movie
-
-	file, err := os.Open(jsonFile)
-	if err != nil {
-		panic(err)
-	}
-	defer file.Close()
-
-	byteValue, _ := ioutil.ReadAll(file)
-	json.Unmarshal(byteValue, &movie)
-
-	return movie
-}
-
-func createMovieJSONFile(movie movie) {
-	file, err := json.MarshalIndent(movie, "", "  ")
-	if err != nil {
-		panic(err)
+		return movie, nil
 	}
 
-	createFolderIfNotExists("./.data")
-
-	jsonFile := fmt.Sprintf("./.data/%s.json", movie.IMDb)
-
-	err = ioutil.WriteFile(jsonFile, file, 0644)
-	if err != nil {
-		panic(err)
+	invalidMovie := invalidMovie{
+		IMDb: imdb,
 	}
+	database.Create(&invalidMovie)
+
+	return movie, errors.New("invalid movie")
 }
 
 func getTitleFromSiteToMovie(document *goquery.Document) string {
@@ -140,14 +111,14 @@ func getMetascoreFromSiteToMovie(document *goquery.Document) int64 {
 	return stringToInt(metascore)
 }
 
-func getGenresFromSiteToMovie(document *goquery.Document) []string {
+func getGenresFromSiteToMovie(document *goquery.Document) string {
 	var genres []string
 
 	document.Find("div.see-more.inline.canwrap").Eq(1).Find("a").Each(func(i int, s *goquery.Selection) {
 		genres = append(genres, getValueFromSiteInsideSelection(s, ""))
 	})
 
-	return genres
+	return strings.Join(genres, ",")
 }
 
 func getCoverFromSiteToMovie(document *goquery.Document) string {
@@ -170,12 +141,19 @@ func getCoverSmallFromSiteToMovie(document *goquery.Document) string {
 	return getValueFromSiteDocument(document, "div.poster a img", "src")
 }
 
-func getRecommendedMoviesFromSiteToMovie(document *goquery.Document) []string {
+func getRecommendedMoviesFromSiteToMovie(document *goquery.Document) string {
 	var recommendedMovies []string
 
 	document.Find("div.rec_item").Each(func(i int, s *goquery.Selection) {
 		recommendedMovies = append(recommendedMovies, getValueFromSiteInsideSelection(s, "data-tconst"))
 	})
 
-	return recommendedMovies
+	return strings.Join(recommendedMovies, ",")
+}
+
+func validMovie(movie movie) bool {
+	return movie.URLCover != "" && movie.URLCoverSmall != "" &&
+		movie.Score > 0 && movie.Year > 0 && movie.AmountOfVotes > 0 &&
+		movie.Genres != "" && movie.Summary != "" &&
+		movie.Summary != `Add a Plot »`
 }

@@ -1,7 +1,6 @@
 package main
 
 import (
-	"os"
 	"regexp"
 	"strconv"
 	"strings"
@@ -34,19 +33,6 @@ func stringToFloat(value string) float64 {
 	}
 
 	return number
-}
-
-func fileExists(file string) bool {
-	if _, err := os.Stat(file); err == nil {
-		return true
-	}
-	return false
-}
-
-func createFolderIfNotExists(folder string) {
-	if _, err := os.Stat(folder); os.IsNotExist(err) {
-		os.Mkdir(folder, os.ModePerm)
-	}
 }
 
 func replacePointsAndCommas(value string) string {

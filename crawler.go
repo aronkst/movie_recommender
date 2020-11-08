@@ -1,8 +1,11 @@
 package main
 
 import (
+	"bufio"
+	"encoding/base64"
 	"errors"
 	"fmt"
+	"io/ioutil"
 	"net/http"
 
 	"github.com/PuerkitoBio/goquery"
@@ -60,4 +63,17 @@ func getValueFromSiteInsideSelection(selection *goquery.Selection, attribute str
 	}
 
 	return clearString(value)
+}
+
+func getImageFromSiteToBase64(url string) string {
+	response, err := http.Get(url)
+	if err != nil {
+		panic(err)
+	}
+	defer response.Body.Close()
+
+	reader := bufio.NewReader(response.Body)
+	content, _ := ioutil.ReadAll(reader)
+	encoded := base64.StdEncoding.EncodeToString(content)
+	return encoded
 }
