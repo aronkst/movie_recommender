@@ -1,40 +1,73 @@
 package main
 
 import (
-	"html/template"
 	"net/http"
 	"strings"
 	"time"
 
 	"github.com/gin-gonic/gin"
+	"gorm.io/driver/sqlite"
+	"gorm.io/gorm"
 )
 
+type movieDB struct {
+	gorm.Model
+	IMDb              string  `gorm:"uniqueIndex"`
+	Title             string  `gorm:"index"`
+	Year              int64   `gorm:"index"`
+	Summary           string  `gorm:"index"`
+	Score             float64 `gorm:"index"`
+	AmountOfVotes     int64
+	Metascore         int64  `gorm:"index"`
+	Points            int64  `gorm:"index"`
+	Genres            string `gorm:"index"`
+	RecommendedMovies string
+	URLCover          string
+	URLCoverSmall     string
+	Cover             string
+}
+
+type notWatch struct {
+	gorm.Model
+	IMDb string `gorm:"uniqueIndex"`
+}
+
 func main() {
-	router := gin.Default()
-	router.SetFuncMap(template.FuncMap{
-		"htmlGenres":            htmlGenres,
-		"htmlIMDbTitle":         htmlIMDbTitle,
-		"htmlExistPreviousPage": htmlExistPreviousPage,
-		"htmlPreviousPage":      htmlPreviousPage,
-		"htmlExistNextPage":     htmlExistNextPage,
-		"htmlNextPage":          htmlNextPage,
-		"htmlMetascore":         htmlMetascore,
-		"htmlOrder":             htmlOrder,
-	})
-	router.LoadHTMLFiles(
-		"./templates/list.tmpl",
-		"./templates/search.tmpl",
-		"./templates/add.tmpl",
-		"./templates/save.tmpl",
-	)
-	router.StaticFS("./.covers", http.Dir("./.covers"))
+	/*
+		router := gin.Default()
+		router.SetFuncMap(template.FuncMap{
+			"htmlGenres":            htmlGenres,
+			"htmlIMDbTitle":         htmlIMDbTitle,
+			"htmlExistPreviousPage": htmlExistPreviousPage,
+			"htmlPreviousPage":      htmlPreviousPage,
+			"htmlExistNextPage":     htmlExistNextPage,
+			"htmlNextPage":          htmlNextPage,
+			"htmlMetascore":         htmlMetascore,
+			"htmlOrder":             htmlOrder,
+		})
+		router.LoadHTMLFiles(
+			"./templates/list.tmpl",
+			"./templates/search.tmpl",
+			"./templates/add.tmpl",
+			"./templates/save.tmpl",
+		)
+		router.StaticFS("./.covers", http.Dir("./.covers"))
 
-	router.GET("/", getRecommendedMovies)
-	router.GET("/search", getSearch)
-	router.GET("/add", getAdd)
-	router.GET("/save", getSave)
+		router.GET("/", getRecommendedMovies)
+		router.GET("/search", getSearch)
+		router.GET("/add", getAdd)
+		router.GET("/save", getSave)
 
-	router.Run()
+		router.Run()
+	*/
+
+	db, err := gorm.Open(sqlite.Open("test.db"), &gorm.Config{})
+	if err != nil {
+		panic("failed to connect database")
+	}
+
+	db.AutoMigrate(&movieDB{})
+	db.AutoMigrate(&notWatch{})
 }
 
 func getRecommendedMovies(context *gin.Context) {
