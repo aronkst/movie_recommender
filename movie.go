@@ -28,9 +28,6 @@ func getMovie(imdb string) (movie, error) {
 }
 
 func getMovieFromSite(imdb string) (movie, error) {
-	fmt.Println("ERROROROROROROR")
-	fmt.Println(imdb)
-
 	url := fmt.Sprintf("https://www.imdb.com/title/%s", imdb)
 	document, err := loadSite(url)
 	if err != nil {
@@ -65,7 +62,7 @@ func getMovieFromSite(imdb string) (movie, error) {
 		Cover:             "",
 	}
 
-	if validMovie(movie) {
+	if moviesIsValid(movie) {
 		movie.Cover = getImageFromSiteToBase64(urlCoverSmall)
 		database.Create(&movie)
 
@@ -151,7 +148,7 @@ func getRecommendedMoviesFromSiteToMovie(document *goquery.Document) string {
 	return strings.Join(recommendedMovies, ",")
 }
 
-func validMovie(movie movie) bool {
+func moviesIsValid(movie movie) bool {
 	return movie.URLCover != "" && movie.URLCoverSmall != "" &&
 		movie.Score > 0 && movie.Year > 0 && movie.AmountOfVotes > 0 &&
 		movie.Genres != "" && movie.Summary != "" &&

@@ -39,3 +39,8 @@ func replacePointsAndCommas(value string) string {
 	value = strings.Replace(value, ".", "", -1)
 	return strings.Replace(value, ",", "", -1)
 }
+
+func stringIsNumeric(value string) bool {
+	_, err := strconv.ParseFloat(value, 64)
+	return err == nil
+}
