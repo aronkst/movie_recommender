@@ -1,6 +1,7 @@
 package main
 
 import (
+	"strconv"
 	"time"
 
 	"github.com/gin-gonic/gin"
@@ -37,8 +38,9 @@ func returnJSONError(context *gin.Context, message string) {
 }
 
 func getWatchedMovies(context *gin.Context) {
-	// TODO Paginação
-	movies := listWatchedMovies()
+	offset := pageParam(context)
+	title, summary, year, imdb, genre, score, metascore, order := searchParams(context)
+	movies := listWatchedMovies(offset, title, summary, year, imdb, genre, score, metascore, order)
 	context.JSON(200, movies)
 }
 
@@ -99,4 +101,27 @@ func formatDate(date string) string {
 		date = "00000000"
 	}
 	return date
+}
+
+func pageParam(context *gin.Context) int {
+	pageString := context.DefaultQuery("page", "0")
+	page, _ := strconv.Atoi(pageString) // TODO alterar metodos de conversão para valor final, stringToInt -> stringToInt64
+	offset := pagination(page)
+	return offset
+}
+
+func searchParams(context *gin.Context) (string, string, int64, string, string, float64, int64, string) {
+	title := context.DefaultQuery("title", "")
+	summary := context.DefaultQuery("summary", "")
+	yearString := context.DefaultQuery("year", "0")
+	year := stringToInt(yearString)
+	imdb := context.DefaultQuery("imdb", "")
+	genre := context.DefaultQuery("genre", "")
+	scoreString := context.DefaultQuery("score", "0")
+	score := stringToFloat(scoreString)
+	metascoreString := context.DefaultQuery("metascore", "0")
+	metascore := stringToInt(metascoreString)
+	order := context.DefaultQuery("order", "points")
+
+	return title, summary, year, imdb, genre, score, metascore, order
 }

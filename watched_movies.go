@@ -65,21 +65,54 @@ func uniqueWatchedMovies(array []watchedMovie) []watchedMovie {
 	return list
 }
 
-func listWatchedMovies() []movie {
+func listWatchedMovies(offset int, title string, summary string, year int64, imdb string, genre string, score float64, metascore int64, order string) []movie {
 	var listIMDb []string
 	var movies []movie
 
 	watchedMovies := getWatchedMoviesFromFolders()
+
 	for _, watchedMovie := range watchedMovies {
 		listIMDb = append(listIMDb, watchedMovie.IMDb)
 	}
+	listIMDb = uniqueValuesInArrayString(listIMDb)
 
-	// TODO Paginação
-	database.
-		Where("imdb IN ?", listIMDb).
+	query := database.Where("imdb IN ?", listIMDb)
+
+	if title != "" {
+		title = "%" + title + "%"
+		query = query.Where("title LIKE ?", title)
+	}
+
+	if summary != "" {
+		summary = "%" + summary + "%"
+		query = query.Where("summary LIKE ?", summary)
+	}
+
+	if year > 0 {
+		query = query.Where("year > ?", year)
+	}
+
+	if imdb != "" {
+		query = query.Where("imdb = ?", imdb)
+	}
+
+	if genre != "" {
+		genre = "%" + genre + "%"
+		query = query.Where("genres LIKE ?", genre)
+	}
+
+	if score > 0 {
+		query = query.Where("score > ?", score)
+	}
+
+	if metascore > 0 {
+		query = query.Where("metascore > ?", metascore)
+	}
+
+	query.
 		Order("points desc").
-		Limit(20).
-		Offset(0).
+		Limit(10).
+		Offset(offset).
 		Find(&movies)
 
 	return movies

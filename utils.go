@@ -44,3 +44,22 @@ func stringIsNumeric(value string) bool {
 	_, err := strconv.ParseFloat(value, 64)
 	return err == nil
 }
+
+func uniqueValuesInArrayString(array []string) []string {
+	keys := make(map[string]bool)
+	list := []string{}
+	for _, entry := range array {
+		if _, value := keys[entry]; !value {
+			keys[entry] = true
+			list = append(list, entry)
+		}
+	}
+	return list
+}
+
+func pagination(page int) int {
+	if page <= 1 {
+		return 0
+	}
+	return (page * 10) - 10
+}
