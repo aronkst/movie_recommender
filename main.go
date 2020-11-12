@@ -30,6 +30,7 @@ func main() {
 	router.GET("/not-watch", getNotWatch)
 	router.POST("/not-watch", postNotWatch)
 	router.DELETE("/not-watch", deleteNotWatch)
+	router.GET("/search", getSearch)
 
 	router.Run()
 }
@@ -103,6 +104,18 @@ func deleteNotWatch(context *gin.Context) {
 		json := removeNotWatch(imdb)
 
 		context.JSON(200, json)
+	}
+}
+
+func getSearch(context *gin.Context) {
+	title := context.DefaultQuery("title", "")
+
+	if title == "" {
+		returnJSONError(context, "invalid values")
+	} else {
+		movies := getSearchMovies(title)
+
+		context.JSON(200, movies)
 	}
 }
 
