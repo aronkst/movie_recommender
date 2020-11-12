@@ -77,18 +77,10 @@ func getRecommendedMovies(context *gin.Context) {
 	// E filtro de pesquisa
 	// TODO
 
-	var movies []movie
+	offset := pageParam(context)
+	title, summary, year, imdb, genre, score, metascore, order := searchParams(context)
 
-	var watchedMovies []string
-	watchedMovies = append(watchedMovies, "tt1196956")
-	watchedMovies = append(watchedMovies, "tt4682786")
-
-	database.
-		Where("imdb IN ?", watchedMovies).
-		Order("points desc").
-		Limit(2).
-		Offset(0).
-		Find(&movies)
+	movies := listRecommendedMovies(offset, title, summary, year, imdb, genre, score, metascore, order)
 
 	context.JSON(200, movies)
 }
