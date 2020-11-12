@@ -66,7 +66,7 @@ func listRecommendedMovies(offset int, title string, summary string, year int64,
 
 	query.
 		Order("points desc").
-		Limit(1000).
+		Limit(10).
 		Offset(offset).
 		Find(&movies)
 

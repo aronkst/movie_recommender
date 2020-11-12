@@ -135,7 +135,6 @@ func addWatchedMovies(imdb string, date string, like int64) map[string]string {
 	}
 
 	json["imdb"] = movie.IMDb
-	json["title"] = movie.Title
 
 	return json
 }

@@ -27,6 +27,9 @@ func main() {
 	router.GET("/watched-movies", getWatchedMovies)
 	router.POST("/watched-movies", postWatchedMovies)
 	router.GET("/recommended-movies", getRecommendedMovies)
+	router.GET("/not-watch", getNotWatch)
+	router.POST("/not-watch", postNotWatch)
+	router.DELETE("/not-watch", deleteNotWatch)
 
 	router.Run()
 }
@@ -62,27 +65,45 @@ func postWatchedMovies(context *gin.Context) {
 }
 
 func getRecommendedMovies(context *gin.Context) {
-	// TODO
-	// Pegar todos os filmes assistidos
-	// montar todos em um array, com os seus IMDBs
-	// Fazer uma consulta no banco, pegando a coluna RecommendedMovies desses filmes
-	// Criar um array de IMDBs, será usados para pegar os filmes recomendados
-	// Fazer loop em todos os RecommendedMovies, colocando cada imdb no array
-	// Remover IMDBs que estão tambem na lista de filmes assistidos (não recomendar um filme que eu ja assisti)
-	// Pegar todos os filmes que eu não quero assistir, do banco de dados
-	// Remover do array de filmes recomendados, os itens que estão em filmes para não assistir
-	// Remover IMDBs duplicados
-	// Com esse array, utilizar no filtro da query abaixo
-	// Depois criar a paginação
-	// E filtro de pesquisa
-	// TODO
-
 	offset := pageParam(context)
 	title, summary, year, imdb, genre, score, metascore, order := searchParams(context)
 
 	movies := listRecommendedMovies(offset, title, summary, year, imdb, genre, score, metascore, order)
 
 	context.JSON(200, movies)
+}
+
+func getNotWatch(context *gin.Context) {
+	offset := pageParam(context)
+	title, summary, year, imdb, genre, score, metascore, order := searchParams(context)
+
+	movies := listNotWatch(offset, title, summary, year, imdb, genre, score, metascore, order)
+
+	context.JSON(200, movies)
+}
+
+func postNotWatch(context *gin.Context) {
+	imdb := context.PostForm("imdb")
+
+	if imdb == "" {
+		returnJSONError(context, "invalid values")
+	} else {
+		json := addNotWatch(imdb)
+
+		context.JSON(200, json)
+	}
+}
+
+func deleteNotWatch(context *gin.Context) {
+	imdb := context.PostForm("imdb")
+
+	if imdb == "" {
+		returnJSONError(context, "invalid values")
+	} else {
+		json := removeNotWatch(imdb)
+
+		context.JSON(200, json)
+	}
 }
 
 func formatDate(date string) string {

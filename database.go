@@ -21,7 +21,7 @@ type movie struct {
 
 type notWatch struct {
 	gorm.Model
-	IMDb string `gorm:"uniqueIndex"`
+	IMDb string `gorm:"column:imdb;uniqueIndex"`
 }
 
 type invalidMovie struct {
