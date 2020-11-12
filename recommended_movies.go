@@ -7,8 +7,10 @@ import (
 func listRecommendedMovies(offset int, title string, summary string, year int64, imdb string, genre string, score float64, metascore int64, order string) []movie {
 	var watchedMoviesListIMDb []string
 	var recommendedMoviesListIMDb []string
+	var notWatchMoviesListIMDb []string
 	var listIMDb []string
 	var movies []movie
+	var notWatchMovies []notWatch
 
 	watchedMovies := getWatchedMoviesFromFolders()
 
@@ -29,7 +31,12 @@ func listRecommendedMovies(offset int, title string, summary string, year int64,
 
 	listIMDb = removeItemInSliceIfExistInSlice(recommendedMoviesListIMDb, watchedMoviesListIMDb)
 
-	// TODO fazer o mesmo processo acima, remover da lista recommendedMoviesListIMDb os filmes bloqueados, que vão ser desenvolvidos depois
+	database.Find(&notWatchMovies)
+	for _, notWatchMovie := range notWatchMovies {
+		notWatchMoviesListIMDb = append(notWatchMoviesListIMDb, notWatchMovie.IMDb)
+	}
+
+	listIMDb = removeItemInSliceIfExistInSlice(listIMDb, notWatchMoviesListIMDb)
 
 	query := database.Where("imdb IN ?", listIMDb)
 
