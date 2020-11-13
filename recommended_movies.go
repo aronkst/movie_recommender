@@ -28,14 +28,13 @@ func listRecommendedMovies(offset int, title string, summary string, year int64,
 		}
 	}
 	recommendedMoviesListIMDb = uniqueValuesInArrayString(recommendedMoviesListIMDb)
-
 	listIMDb = removeItemInSliceIfExistInSlice(recommendedMoviesListIMDb, watchedMoviesListIMDb)
 
 	database.Find(&notWatchMovies)
+
 	for _, notWatchMovie := range notWatchMovies {
 		notWatchMoviesListIMDb = append(notWatchMoviesListIMDb, notWatchMovie.IMDb)
 	}
-
 	listIMDb = removeItemInSliceIfExistInSlice(listIMDb, notWatchMoviesListIMDb)
 
 	query := database.Where("imdb IN ?", listIMDb)
@@ -78,23 +77,4 @@ func listRecommendedMovies(offset int, title string, summary string, year int64,
 		Find(&movies)
 
 	return movies
-}
-
-func removeItemInSliceIfExistInSlice(slice1 []string, slice2 []string) []string {
-	var final []string
-	var exists bool
-
-	for _, s1 := range slice1 {
-		exists = false
-		for _, s2 := range slice2 {
-			if s1 == s2 {
-				exists = true
-			}
-		}
-		if !exists {
-			final = append(final, s1)
-		}
-	}
-
-	return final
 }

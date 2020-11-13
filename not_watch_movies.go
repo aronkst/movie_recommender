@@ -1,9 +1,10 @@
 package main
 
 func addNotWatch(imdb string) map[string]string {
+	var notWatchWhere notWatch
+
 	json := make(map[string]string)
 
-	var notWatchWhere notWatch
 	where := database.Where("imdb = ?", imdb).First(&notWatchWhere)
 
 	if where.RowsAffected >= 1 {

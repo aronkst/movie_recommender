@@ -42,16 +42,3 @@ func downloadImage(url string, folder string, filename string) {
 		panic(err)
 	}
 }
-
-func fileExists(file string) bool {
-	if _, err := os.Stat(file); err == nil {
-		return true
-	}
-	return false
-}
-
-func createFolderIfNotExists(folder string) {
-	if _, err := os.Stat(folder); os.IsNotExist(err) {
-		os.Mkdir(folder, os.ModePerm)
-	}
-}

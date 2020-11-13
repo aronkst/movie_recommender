@@ -28,6 +28,8 @@ func getMovie(imdb string) (movie, error) {
 }
 
 func getMovieFromSite(imdb string) (movie, error) {
+	var points int64
+
 	url := fmt.Sprintf("https://www.imdb.com/title/%s", imdb)
 	document, err := loadSite(url)
 	if err != nil {
@@ -39,7 +41,6 @@ func getMovieFromSite(imdb string) (movie, error) {
 	metascore := getMetascoreFromSiteToMovie(document)
 	urlCoverSmall := getCoverSmallFromSiteToMovie(document)
 
-	var points int64
 	if metascore <= 0 {
 		points = int64(score * float64(amountOfVotes))
 	} else {

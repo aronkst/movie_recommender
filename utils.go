@@ -1,9 +1,11 @@
 package main
 
 import (
+	"os"
 	"regexp"
 	"strconv"
 	"strings"
+	"time"
 )
 
 func clearString(value string) string {
@@ -54,6 +56,7 @@ func uniqueValuesInArrayString(array []string) []string {
 			list = append(list, entry)
 		}
 	}
+
 	return list
 }
 
@@ -61,5 +64,50 @@ func pagination(page int) int {
 	if page <= 1 {
 		return 0
 	}
+
 	return (page * 10) - 10
+}
+
+func fileExists(file string) bool {
+	if _, err := os.Stat(file); err == nil {
+		return true
+	}
+
+	return false
+}
+
+func createFolderIfNotExists(folder string) {
+	if _, err := os.Stat(folder); os.IsNotExist(err) {
+		os.Mkdir(folder, os.ModePerm)
+	}
+}
+
+func formatDate(date string) string {
+	if date == "" {
+		dateTime := time.Now()
+		return dateTime.Format("20060102")
+	} else if date == "0" {
+		date = "00000000"
+	}
+
+	return date
+}
+
+func removeItemInSliceIfExistInSlice(slice1 []string, slice2 []string) []string {
+	var final []string
+	var exists bool
+
+	for _, s1 := range slice1 {
+		exists = false
+		for _, s2 := range slice2 {
+			if s1 == s2 {
+				exists = true
+			}
+		}
+		if !exists {
+			final = append(final, s1)
+		}
+	}
+
+	return final
 }

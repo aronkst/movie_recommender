@@ -2,7 +2,6 @@ package main
 
 import (
 	"strconv"
-	"time"
 
 	"github.com/gin-gonic/gin"
 	"gorm.io/driver/sqlite"
@@ -35,16 +34,18 @@ func main() {
 	router.Run()
 }
 
-func returnJSONError(context *gin.Context, message string) {
+func jsonError(context *gin.Context, message string) {
 	context.JSON(200, gin.H{
 		"error": message,
 	})
 }
 
 func getWatchedMovies(context *gin.Context) {
-	offset := pageParam(context)
+	offset := pageParams(context)
 	title, summary, year, imdb, genre, score, metascore, order := searchParams(context)
+
 	movies := listWatchedMovies(offset, title, summary, year, imdb, genre, score, metascore, order)
+
 	context.JSON(200, movies)
 }
 
@@ -54,19 +55,19 @@ func postWatchedMovies(context *gin.Context) {
 	likeString := context.PostForm("like")
 
 	if imdb == "" || likeString == "" {
-		returnJSONError(context, "invalid values")
-	} else {
-		date = formatDate(date)
-		like := stringToInt(likeString)
-
-		movie := addWatchedMovies(imdb, date, like)
-
-		context.JSON(200, movie)
+		jsonError(context, "invalid values")
+		return
 	}
+
+	date = formatDate(date)
+	like := stringToInt(likeString)
+	movie := addWatchedMovies(imdb, date, like)
+
+	context.JSON(200, movie)
 }
 
 func getRecommendedMovies(context *gin.Context) {
-	offset := pageParam(context)
+	offset := pageParams(context)
 	title, summary, year, imdb, genre, score, metascore, order := searchParams(context)
 
 	movies := listRecommendedMovies(offset, title, summary, year, imdb, genre, score, metascore, order)
@@ -75,7 +76,7 @@ func getRecommendedMovies(context *gin.Context) {
 }
 
 func getNotWatch(context *gin.Context) {
-	offset := pageParam(context)
+	offset := pageParams(context)
 	title, summary, year, imdb, genre, score, metascore, order := searchParams(context)
 
 	movies := listNotWatch(offset, title, summary, year, imdb, genre, score, metascore, order)
@@ -87,52 +88,45 @@ func postNotWatch(context *gin.Context) {
 	imdb := context.PostForm("imdb")
 
 	if imdb == "" {
-		returnJSONError(context, "invalid values")
-	} else {
-		json := addNotWatch(imdb)
-
-		context.JSON(200, json)
+		jsonError(context, "invalid values")
+		return
 	}
+
+	json := addNotWatch(imdb)
+
+	context.JSON(200, json)
 }
 
 func deleteNotWatch(context *gin.Context) {
 	imdb := context.PostForm("imdb")
 
 	if imdb == "" {
-		returnJSONError(context, "invalid values")
-	} else {
-		json := removeNotWatch(imdb)
-
-		context.JSON(200, json)
+		jsonError(context, "invalid values")
+		return
 	}
+
+	json := removeNotWatch(imdb)
+
+	context.JSON(200, json)
 }
 
 func getSearch(context *gin.Context) {
 	title := context.DefaultQuery("title", "")
 
 	if title == "" {
-		returnJSONError(context, "invalid values")
-	} else {
-		movies := getSearchMovies(title)
-
-		context.JSON(200, movies)
+		jsonError(context, "invalid values")
 	}
+
+	movies := getSearchMovies(title)
+
+	context.JSON(200, movies)
 }
 
-func formatDate(date string) string {
-	if date == "" {
-		dateTime := time.Now()
-		return dateTime.Format("20060102")
-	} else if date == "0" {
-		date = "00000000"
-	}
-	return date
-}
-
-func pageParam(context *gin.Context) int {
+func pageParams(context *gin.Context) int {
 	pageString := context.DefaultQuery("page", "0")
 	page, _ := strconv.Atoi(pageString) // TODO alterar metodos de conversão para valor final, stringToInt -> stringToInt64
 	offset := pagination(page)
+
 	return offset
 }
 

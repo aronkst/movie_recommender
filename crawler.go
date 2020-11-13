@@ -74,6 +74,5 @@ func getImageFromSiteToBase64(url string) string {
 
 	reader := bufio.NewReader(response.Body)
 	content, _ := ioutil.ReadAll(reader)
-	encoded := base64.StdEncoding.EncodeToString(content)
-	return encoded
+	return base64.StdEncoding.EncodeToString(content)
 }
