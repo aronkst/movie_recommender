@@ -6,7 +6,6 @@
 *.dylib
 movie_recommender
 *.jpg
-.data/*.json
 *.db
 
 # Test binary, built with `go test -c`
