@@ -3,6 +3,7 @@ package main
 import (
 	"strconv"
 
+	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
@@ -22,6 +23,8 @@ func main() {
 	database.AutoMigrate(&invalidMovie{})
 
 	router := gin.Default()
+
+	router.Use(cors.Default())
 
 	router.GET("/watched-movies", getWatchedMovies)
 	router.POST("/watched-movies", postWatchedMovies)

@@ -50,7 +50,7 @@ func listRecommendedMovies(offset int, title string, summary string, year int64,
 	}
 
 	if year > 0 {
-		query = query.Where("year > ?", year)
+		query = query.Where("year >= ?", year)
 	}
 
 	if imdb != "" {
@@ -63,11 +63,11 @@ func listRecommendedMovies(offset int, title string, summary string, year int64,
 	}
 
 	if score > 0 {
-		query = query.Where("score > ?", score)
+		query = query.Where("score >= ?", score)
 	}
 
 	if metascore > 0 {
-		query = query.Where("metascore > ?", metascore)
+		query = query.Where("metascore >= ?", metascore)
 	}
 
 	query.
