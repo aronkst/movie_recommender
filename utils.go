@@ -1,6 +1,7 @@
 package main
 
 import (
+	"math"
 	"os"
 	"regexp"
 	"strconv"
@@ -110,4 +111,9 @@ func removeItemInSliceIfExistInSlice(slice1 []string, slice2 []string) []string 
 	}
 
 	return final
+}
+
+func countPages(count int64) int64 {
+	pages := float64(count) / float64(10)
+	return int64(math.Ceil(pages))
 }

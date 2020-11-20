@@ -12,6 +12,11 @@ import (
 var database *gorm.DB
 var errDatabase error
 
+type response struct {
+	Movies []movie
+	Pages  int64
+}
+
 func main() {
 	database, errDatabase = gorm.Open(sqlite.Open("database.db"), &gorm.Config{})
 	if errDatabase != nil {
@@ -47,9 +52,12 @@ func getWatchedMovies(context *gin.Context) {
 	offset := pageParams(context)
 	title, summary, year, imdb, genre, score, metascore, order := searchParams(context)
 
-	movies := listWatchedMovies(offset, title, summary, year, imdb, genre, score, metascore, order)
+	movies, pages := listWatchedMovies(offset, title, summary, year, imdb, genre, score, metascore, order)
 
-	context.JSON(200, movies)
+	context.JSON(200, response{
+		Movies: movies,
+		Pages:  pages,
+	})
 }
 
 func postWatchedMovies(context *gin.Context) {

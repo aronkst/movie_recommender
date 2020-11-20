@@ -65,7 +65,7 @@ func uniqueWatchedMovies(array []watchedMovie) []watchedMovie {
 	return list
 }
 
-func listWatchedMovies(offset int, title string, summary string, year int64, imdb string, genre string, score float64, metascore int64, order string) []movie {
+func listWatchedMovies(offset int, title string, summary string, year int64, imdb string, genre string, score float64, metascore int64, order string) ([]movie, int64) {
 	var listIMDb []string
 	var movies []movie
 
@@ -109,13 +109,17 @@ func listWatchedMovies(offset int, title string, summary string, year int64, imd
 		query = query.Where("metascore >= ?", metascore)
 	}
 
+	var count int64
+	query.Model(&movie{}).Count(&count)
+	pages := countPages(count)
+
 	query.
 		Order("points desc").
 		Limit(10).
 		Offset(offset).
 		Find(&movies)
 
-	return movies
+	return movies, pages
 }
 
 func addWatchedMovies(imdb string, date string, like int64) map[string]string {
