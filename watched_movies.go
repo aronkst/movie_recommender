@@ -13,7 +13,7 @@ type watchedMovie struct {
 	Like  int64
 }
 
-func getWatchedMoviesFromFolders() []watchedMovie {
+func getWatchedMoviesFromFolders(onlyLike bool) []watchedMovie {
 	var watchedMovies []watchedMovie
 
 	folders, err := ioutil.ReadDir("./")
@@ -35,14 +35,18 @@ func getWatchedMoviesFromFolders() []watchedMovie {
 				likeString = likeString[:len(likeString)-4]
 				like := stringToInt(likeString)
 
-				if like == 1 {
-					watchedMovie := watchedMovie{
-						Date:  stringToInt(values[0]),
-						IMDb:  values[1],
-						Title: values[2],
-						Like:  like,
-					}
+				watchedMovie := watchedMovie{
+					Date:  stringToInt(values[0]),
+					IMDb:  values[1],
+					Title: values[2],
+					Like:  like,
+				}
 
+				if onlyLike {
+					if like == 1 {
+						watchedMovies = append(watchedMovies, watchedMovie)
+					}
+				} else {
 					watchedMovies = append(watchedMovies, watchedMovie)
 				}
 			}
@@ -69,7 +73,7 @@ func listWatchedMovies(offset int, title string, summary string, year int64, imd
 	var listIMDb []string
 	var movies []movie
 
-	watchedMovies := getWatchedMoviesFromFolders()
+	watchedMovies := getWatchedMoviesFromFolders(false)
 
 	for _, watchedMovie := range watchedMovies {
 		listIMDb = append(listIMDb, watchedMovie.IMDb)

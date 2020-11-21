@@ -6,13 +6,14 @@ import (
 
 func listRecommendedMovies(offset int, title string, summary string, year int64, imdb string, genre string, score float64, metascore int64, order string) ([]movie, int64) {
 	var watchedMoviesListIMDb []string
+	var watchedMoviesAgainListIMDb []string
 	var recommendedMoviesListIMDb []string
 	var blockedMoviesListIMDb []string
 	var listIMDb []string
 	var movies []movie
 	var blockedMovies []blockedMovie
 
-	watchedMovies := getWatchedMoviesFromFolders()
+	watchedMovies := getWatchedMoviesFromFolders(true)
 
 	for _, watchedMovie := range watchedMovies {
 		watchedMoviesListIMDb = append(watchedMoviesListIMDb, watchedMovie.IMDb)
@@ -36,6 +37,13 @@ func listRecommendedMovies(offset int, title string, summary string, year int64,
 		blockedMoviesListIMDb = append(blockedMoviesListIMDb, blockedMovie.IMDb)
 	}
 	listIMDb = removeItemInSliceIfExistInSlice(listIMDb, blockedMoviesListIMDb)
+
+	watchedMovies = getWatchedMoviesFromFolders(false)
+
+	for _, watchedMovie := range watchedMovies {
+		watchedMoviesAgainListIMDb = append(watchedMoviesAgainListIMDb, watchedMovie.IMDb)
+	}
+	listIMDb = removeItemInSliceIfExistInSlice(listIMDb, watchedMoviesAgainListIMDb)
 
 	query := database.Where("imdb IN ?", listIMDb)
 
