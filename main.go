@@ -132,6 +132,7 @@ func getSearch(context *gin.Context) {
 
 	if title == "" {
 		jsonError(context, "invalid values")
+		return
 	}
 
 	movies := getSearchMovies(title)
@@ -141,7 +142,7 @@ func getSearch(context *gin.Context) {
 
 func pageParams(context *gin.Context) int {
 	pageString := context.DefaultQuery("page", "0")
-	page, _ := strconv.Atoi(pageString) // TODO alterar metodos de conversão para valor final, stringToInt -> stringToInt64
+	page, _ := strconv.Atoi(pageString)
 	offset := pagination(page)
 
 	return offset
