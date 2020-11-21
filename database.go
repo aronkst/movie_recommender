@@ -19,7 +19,7 @@ type movie struct {
 	Cover             string
 }
 
-type notWatch struct {
+type blockedMovie struct {
 	gorm.Model
 	IMDb string `gorm:"column:imdb;uniqueIndex"`
 }

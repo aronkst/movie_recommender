@@ -4,13 +4,13 @@ import (
 	"strings"
 )
 
-func listRecommendedMovies(offset int, title string, summary string, year int64, imdb string, genre string, score float64, metascore int64, order string) []movie {
+func listRecommendedMovies(offset int, title string, summary string, year int64, imdb string, genre string, score float64, metascore int64, order string) ([]movie, int64) {
 	var watchedMoviesListIMDb []string
 	var recommendedMoviesListIMDb []string
-	var notWatchMoviesListIMDb []string
+	var blockedMoviesListIMDb []string
 	var listIMDb []string
 	var movies []movie
-	var notWatchMovies []notWatch
+	var blockedMovies []blockedMovie
 
 	watchedMovies := getWatchedMoviesFromFolders()
 
@@ -30,12 +30,12 @@ func listRecommendedMovies(offset int, title string, summary string, year int64,
 	recommendedMoviesListIMDb = uniqueValuesInArrayString(recommendedMoviesListIMDb)
 	listIMDb = removeItemInSliceIfExistInSlice(recommendedMoviesListIMDb, watchedMoviesListIMDb)
 
-	database.Find(&notWatchMovies)
+	database.Find(&blockedMovies)
 
-	for _, notWatchMovie := range notWatchMovies {
-		notWatchMoviesListIMDb = append(notWatchMoviesListIMDb, notWatchMovie.IMDb)
+	for _, blockedMovie := range blockedMovies {
+		blockedMoviesListIMDb = append(blockedMoviesListIMDb, blockedMovie.IMDb)
 	}
-	listIMDb = removeItemInSliceIfExistInSlice(listIMDb, notWatchMoviesListIMDb)
+	listIMDb = removeItemInSliceIfExistInSlice(listIMDb, blockedMoviesListIMDb)
 
 	query := database.Where("imdb IN ?", listIMDb)
 
@@ -70,11 +70,15 @@ func listRecommendedMovies(offset int, title string, summary string, year int64,
 		query = query.Where("metascore >= ?", metascore)
 	}
 
+	var count int64
+	query.Model(&movie{}).Count(&count)
+	pages := countPages(count)
+
 	query.
 		Order("points desc").
 		Limit(10).
 		Offset(offset).
 		Find(&movies)
 
-	return movies
+	return movies, pages
 }

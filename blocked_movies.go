@@ -1,21 +1,21 @@
 package main
 
-func addNotWatch(imdb string) map[string]string {
-	var notWatchWhere notWatch
+func addBlockedMovie(imdb string) map[string]string {
+	var blockedMovieWhere blockedMovie
 
 	json := make(map[string]string)
 
-	where := database.Where("imdb = ?", imdb).First(&notWatchWhere)
+	where := database.Where("imdb = ?", imdb).First(&blockedMovieWhere)
 
 	if where.RowsAffected >= 1 {
 		json["error"] = "movie already saved"
 		return json
 	}
 
-	notWatch := notWatch{
+	blockedMovie := blockedMovie{
 		IMDb: imdb,
 	}
-	result := database.Create(&notWatch)
+	result := database.Create(&blockedMovie)
 
 	if result.Error != nil {
 		json["error"] = "an error has occurred"
@@ -26,14 +26,14 @@ func addNotWatch(imdb string) map[string]string {
 	return json
 }
 
-func removeNotWatch(imdb string) map[string]string {
+func removeBlockedMovie(imdb string) map[string]string {
 	json := make(map[string]string)
 
-	var notWatchWhere notWatch
-	where := database.Where("imdb = ?", imdb).First(&notWatchWhere)
+	var blockedMovieWhere blockedMovie
+	where := database.Where("imdb = ?", imdb).First(&blockedMovieWhere)
 
 	if where.RowsAffected >= 1 {
-		database.Unscoped().Where("imdb = ?", imdb).Delete(notWatch{})
+		database.Unscoped().Where("imdb = ?", imdb).Delete(blockedMovie{})
 
 		json["imdb"] = imdb
 		return json
@@ -43,14 +43,14 @@ func removeNotWatch(imdb string) map[string]string {
 	return json
 }
 
-func listNotWatch(offset int, title string, summary string, year int64, imdb string, genre string, score float64, metascore int64, order string) []movie {
-	var notWatchMovies []notWatch
+func listBlockedMovies(offset int, title string, summary string, year int64, imdb string, genre string, score float64, metascore int64, order string) ([]movie, int64) {
+	var blockedMovies []blockedMovie
 	var listIMDb []string
 	var movies []movie
 
-	database.Find(&notWatchMovies)
-	for _, notWatchMovie := range notWatchMovies {
-		listIMDb = append(listIMDb, notWatchMovie.IMDb)
+	database.Find(&blockedMovies)
+	for _, blockedMovie := range blockedMovies {
+		listIMDb = append(listIMDb, blockedMovie.IMDb)
 	}
 
 	query := database.Where("imdb IN ?", listIMDb)
@@ -86,11 +86,15 @@ func listNotWatch(offset int, title string, summary string, year int64, imdb str
 		query = query.Where("metascore >= ?", metascore)
 	}
 
+	var count int64
+	query.Model(&movie{}).Count(&count)
+	pages := countPages(count)
+
 	query.
 		Order("points desc").
 		Limit(10).
 		Offset(offset).
 		Find(&movies)
 
-	return movies
+	return movies, pages
 }

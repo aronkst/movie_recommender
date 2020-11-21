@@ -24,7 +24,7 @@ func main() {
 	}
 
 	database.AutoMigrate(&movie{})
-	database.AutoMigrate(&notWatch{})
+	database.AutoMigrate(&blockedMovie{})
 	database.AutoMigrate(&invalidMovie{})
 
 	router := gin.Default()
@@ -34,9 +34,9 @@ func main() {
 	router.GET("/watched-movies", getWatchedMovies)
 	router.POST("/watched-movies", postWatchedMovies)
 	router.GET("/recommended-movies", getRecommendedMovies)
-	router.GET("/not-watch", getNotWatch)
-	router.POST("/not-watch", postNotWatch)
-	router.DELETE("/not-watch", deleteNotWatch)
+	router.GET("/blocked-movies", getBlockedMovies)
+	router.POST("/blocked-movies", postBlockedMovies)
+	router.DELETE("/blocked-movies", deleteBlockedMovies)
 	router.GET("/search", getSearch)
 
 	router.Run()
@@ -81,21 +81,27 @@ func getRecommendedMovies(context *gin.Context) {
 	offset := pageParams(context)
 	title, summary, year, imdb, genre, score, metascore, order := searchParams(context)
 
-	movies := listRecommendedMovies(offset, title, summary, year, imdb, genre, score, metascore, order)
+	movies, pages := listRecommendedMovies(offset, title, summary, year, imdb, genre, score, metascore, order)
 
-	context.JSON(200, movies)
+	context.JSON(200, response{
+		Movies: movies,
+		Pages:  pages,
+	})
 }
 
-func getNotWatch(context *gin.Context) {
+func getBlockedMovies(context *gin.Context) {
 	offset := pageParams(context)
 	title, summary, year, imdb, genre, score, metascore, order := searchParams(context)
 
-	movies := listNotWatch(offset, title, summary, year, imdb, genre, score, metascore, order)
+	movies, pages := listBlockedMovies(offset, title, summary, year, imdb, genre, score, metascore, order)
 
-	context.JSON(200, movies)
+	context.JSON(200, response{
+		Movies: movies,
+		Pages:  pages,
+	})
 }
 
-func postNotWatch(context *gin.Context) {
+func postBlockedMovies(context *gin.Context) {
 	imdb := context.PostForm("imdb")
 
 	if imdb == "" {
@@ -103,12 +109,12 @@ func postNotWatch(context *gin.Context) {
 		return
 	}
 
-	json := addNotWatch(imdb)
+	json := addBlockedMovie(imdb)
 
 	context.JSON(200, json)
 }
 
-func deleteNotWatch(context *gin.Context) {
+func deleteBlockedMovies(context *gin.Context) {
 	imdb := context.PostForm("imdb")
 
 	if imdb == "" {
@@ -116,7 +122,7 @@ func deleteNotWatch(context *gin.Context) {
 		return
 	}
 
-	json := removeNotWatch(imdb)
+	json := removeBlockedMovie(imdb)
 
 	context.JSON(200, json)
 }
