@@ -33,13 +33,13 @@ func main() {
 	router.Use(cors.Default())
 	router.Use(static.Serve("/", static.LocalFile("./", true)))
 
-	router.GET("/watched-movies", getWatchedMovies)
-	router.POST("/watched-movies", postWatchedMovies)
-	router.GET("/recommended-movies", getRecommendedMovies)
-	router.GET("/blocked-movies", getBlockedMovies)
-	router.POST("/blocked-movies", postBlockedMovies)
-	router.DELETE("/blocked-movies", deleteBlockedMovies)
-	router.GET("/search", getSearch)
+	router.GET("/api/watched-movies", getWatchedMovies)
+	router.POST("/api/watched-movies", postWatchedMovies)
+	router.GET("/api/recommended-movies", getRecommendedMovies)
+	router.GET("/api/blocked-movies", getBlockedMovies)
+	router.POST("/api/blocked-movies", postBlockedMovies)
+	router.DELETE("/api/blocked-movies", deleteBlockedMovies)
+	router.GET("/api/search", getSearch)
 
 	router.Run()
 }
