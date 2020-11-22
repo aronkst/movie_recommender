@@ -11,12 +11,7 @@ func downloadCover(movie movie, date string, like int64) {
 	title := regexReplace(movie.Title, "[^a-zA-Z0-9 ]+", "")
 	filename := fmt.Sprintf("%s__%s__%s__%d.jpg", date, movie.IMDb, title, like)
 	filename = fmt.Sprintf("./%s/%s", date[0:4], filename)
-	downloadImage(movie.Cover, date[0:4], filename)
-}
-
-func downloadSmallCover(movie movie) {
-	filename := fmt.Sprintf("./.covers/%s.jpg", movie.IMDb)
-	downloadImage(movie.CoverSmall, "./.covers", filename)
+	downloadImage(movie.URLCover, date[0:4], filename)
 }
 
 func downloadImage(url string, folder string, filename string) {
@@ -27,7 +22,7 @@ func downloadImage(url string, folder string, filename string) {
 	}
 
 	if url == "" {
-		return
+		panic("url is empty")
 	}
 
 	image, err := http.Get(url)

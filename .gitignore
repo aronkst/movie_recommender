@@ -5,8 +5,6 @@
 *.so
 *.dylib
 movie_recommender
-*.jpg
-.data/*.json
 
 # Test binary, built with `go test -c`
 *.test
@@ -16,3 +14,7 @@ movie_recommender
 
 # Dependency directories (remove the comment below to include it)
 # vendor/
+
+*.jpg
+*.db
+TODO.txt

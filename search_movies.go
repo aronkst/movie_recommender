@@ -15,14 +15,15 @@ type searchMovie struct {
 }
 
 func getSearchMovies(search string) []searchMovie {
+	var movies []searchMovie
+
 	search = strings.ReplaceAll(search, " ", "%20")
+
 	url := fmt.Sprintf("https://www.imdb.com/find?q=%s&s=tt&ttype=ft", search)
 	document, err := loadSite(url)
 	if err != nil {
 		panic(err)
 	}
-
-	var movies []searchMovie
 
 	document.Find("tr[class*='findResult']").Each(func(i int, s *goquery.Selection) {
 		searchMovie := searchMovie{
@@ -43,15 +44,16 @@ func getTitleFromSiteToSearchMovie(selection *goquery.Selection) string {
 }
 
 func getYearFromSiteToSearchMovie(selection *goquery.Selection) int64 {
-	yearString := getValueFromSiteSelection(selection, "td.result_text", "")
-	yearString = regexReplace(yearString, "([[0-9]+)", ";$1")
-	index := strings.Index(yearString, "(;") + 2
+	year := getValueFromSiteSelection(selection, "td.result_text", "")
+	year = regexReplace(year, "([[0-9]+)", ";$1")
+
+	index := strings.Index(year, "(;") + 2
 	if index == -1 {
 		return 0
 	}
-	yearString = yearString[index : index+4]
-	year := stringToInt(yearString)
-	return year
+
+	year = year[index : index+4]
+	return stringToInt(year)
 }
 
 func getIMDBFromSiteToSearchMovie(selection *goquery.Selection) string {
