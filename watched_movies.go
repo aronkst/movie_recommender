@@ -16,14 +16,14 @@ type watchedMovie struct {
 func getWatchedMoviesFromFolders(onlyLike bool) []watchedMovie {
 	var watchedMovies []watchedMovie
 
-	folders, err := ioutil.ReadDir("./")
+	folders, err := ioutil.ReadDir("./../")
 	if err != nil {
 		panic(err)
 	}
 
 	for _, folder := range folders {
 		if folder.IsDir() && stringIsNumeric(folder.Name()) {
-			files, err := ioutil.ReadDir(fmt.Sprintf("./%s/", folder.Name()))
+			files, err := ioutil.ReadDir(fmt.Sprintf("./../%s/", folder.Name()))
 			if err != nil {
 				panic(err)
 			}

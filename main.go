@@ -19,7 +19,7 @@ type response struct {
 }
 
 func main() {
-	database, errDatabase = gorm.Open(sqlite.Open("database.db"), &gorm.Config{})
+	database, errDatabase = gorm.Open(sqlite.Open("./database.db"), &gorm.Config{})
 	if errDatabase != nil {
 		panic(errDatabase)
 	}

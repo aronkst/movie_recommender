@@ -18,3 +18,4 @@ movie_recommender
 *.jpg
 *.db
 TODO.txt
+.vscode
