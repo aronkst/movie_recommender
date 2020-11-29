@@ -10,12 +10,12 @@ import (
 func downloadCover(movie movie, date string, like int64) {
 	title := regexReplace(movie.Title, "[^a-zA-Z0-9 ]+", "")
 	filename := fmt.Sprintf("%s__%s__%s__%d.jpg", date, movie.IMDb, title, like)
-	filename = fmt.Sprintf("./%s/%s", date[0:4], filename)
+	filename = fmt.Sprintf("./../%s/%s", date[0:4], filename)
 	downloadImage(movie.URLCover, date[0:4], filename)
 }
 
 func downloadImage(url string, folder string, filename string) {
-	createFolderIfNotExists(folder)
+	createFolderIfNotExists(fmt.Sprintf("./../%s", folder))
 
 	if fileExists(filename) {
 		return
