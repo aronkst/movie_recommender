@@ -10,7 +10,7 @@ The application uses the [SQLite](https://sqlite.org/) database to store informa
 
 The watched movies are stored in folders, the name of the folder being the year in which the movie was watched, or 0000 if the date when the movie was watched was not registered. The reason for storing watched movies in folders is to have control and a quick view of all watched movies, without the need to run the application for this case.
 
-This application works in conjunction with its [front-end](https://github.com/aronkst/movie_recommender_react), which was developed in [React](https://github.com/facebook/react).
+This application works in conjunction with its [front-end](https://github.com/aronkst/movie-recommender-react), which was developed in [React](https://github.com/facebook/react).
 
 ## Run the application
 
@@ -18,11 +18,11 @@ Clone this repository and build the application with the command below.
 
 `go build .`
 
-Clone the [front-end](https://github.com/aronkst/movie_recommender_react) repository, and build with the command below.
+Clone the [front-end](https://github.com/aronkst/movie-recommender-react) repository, and build with the command below.
 
 `npm run build`
 
-Now you must join the files from the [back-end](https://github.com/aronkst/movie_recommender) and [front-end](https://github.com/aronkst/movie_recommender_react) inside a single folder, and just run the build file from Go, with the command below.
+Now you must join the files from the [back-end](https://github.com/aronkst/movie-recommender) and [front-end](https://github.com/aronkst/movie-recommender-react) inside a single folder, and just run the build file from Go, with the command below.
 
 `./movie_recommender`
 
